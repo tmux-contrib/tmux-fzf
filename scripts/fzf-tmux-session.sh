@@ -1,4 +1,4 @@
-#!/usr/bin/env zsh
+#!/bin/bash
 
 # Switch to a given tmux session.
 tmux_switch_to() {
@@ -9,7 +9,7 @@ fzf_tmux_session() {
 	local SESSION_NAME
 
 	# List sessions, extract their names, and use fzf to select one.
-	SESSION_NAME=$(tmux ls | cut -d: -f1 | fzf --header=' Session' --bind='ctrl-x:execute(tmux kill-session -t {})+reload(tmux ls | cut -d: -f1),space:jump,jump:accept')
+	SESSION_NAME=$(tmux ls | cut -d: -f1 | fzf-tmux -p --header=' Session' --bind='ctrl-x:execute(tmux kill-session -t {})+reload(tmux ls | cut -d: -f1),space:jump,jump:accept')
 
 	# If a session is selected, switch to it.
 	if [[ -n $SESSION_NAME ]]; then
