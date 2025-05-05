@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/zsh -li
 
 # Switch to a given tmux session.
 tmux_switch_to() {
