@@ -36,7 +36,7 @@ fzf_tmux_explore() {
 	if [[ $# -eq 1 ]]; then
 		SESSION_DIR_PATH=$1
 	else
-		SESSION_DIR_PATH=$(find ~/Projects -mindepth 2 -maxdepth 2 -type d | fzf-tmux -p --header='  Projects')
+		SESSION_DIR_PATH=$(find ~/Projects -mindepth 2 -maxdepth 3 -type d | fzf-tmux -p --header='  Projects')
 	fi
 
 	# Exit silently if no directory was selected.
