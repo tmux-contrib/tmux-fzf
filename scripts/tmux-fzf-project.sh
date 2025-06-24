@@ -1,4 +1,4 @@
-#!/bin/zsh -li
+#!/bin/bash
 
 # This script is adapted from ThePrimeagen's tmux-sessionizer:
 # https://github.com/ThePrimeagen/tmux-sessionizer
