@@ -1,42 +1,24 @@
 #!/bin/bash
 
+CURRENT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# shellcheck source=scripts/tmux-fzf-common.sh
+source "$CURRENT_DIR/tmux-fzf-common.sh"
+
+check_dependencies
+
 # This script is adapted from ThePrimeagen's tmux-sessionizer:
 # https://github.com/ThePrimeagen/tmux-sessionizer
 #
 # Provides functions for managing tmux sessions with fzf.
 
-# Switch to a given tmux session.
-tmux_switch_to() {
-	tmux switch-client -t "$1"
-}
-
-# Check if a tmux session exists.
-tmux_has_session() {
-	tmux list-sessions 2>/dev/null | grep -q "^$1:"
-}
-
-# Create a new tmux session.
-tmux_new_session() {
-	tmux new-session -ds "$1" -c "$2"
-}
-
-# Derive a session name from a directory path.
-tmux_session_name() {
-	local PROJECT WORKSPACE
-
-	PROJECT=$(basename "$1")
-	WORKSPACE=$(basename "$(dirname "$1")")
-
-	echo "${WORKSPACE}/${PROJECT}" | tr . _
-}
-
-fzf_tmux_explore() {
+tmux_session_project() {
 	local SESSION_DIR_PATH SESSION_NAME
 
 	if [[ $# -eq 1 ]]; then
 		SESSION_DIR_PATH=$1
 	else
-		SESSION_DIR_PATH=$(find ~/Projects -mindepth 2 -maxdepth 3 -type d | fzf --tmux=100%,100% --border=none --header='  Projects')
+		SESSION_PROJECT_PATH=$(tmux get-option -gq "@tmux-fzf-projects-path" || echo "$HOME/Projects")
+		SESSION_DIR_PATH=$(find "$SESSION_PROJECT_PATH" -mindepth 2 -maxdepth 3 -type d | fzf --tmux=100%,100% --border=none --header='  Projects')
 	fi
 
 	# Exit silently if no directory was selected.
@@ -53,4 +35,4 @@ fzf_tmux_explore() {
 	tmux_switch_to "$SESSION_NAME"
 }
 
-fzf_tmux_explore "$@"
+tmux_session_project "$@"

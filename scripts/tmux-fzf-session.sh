@@ -1,11 +1,12 @@
 #!/bin/bash
 
-# Switch to a given tmux session.
-tmux_switch_to() {
-	tmux switch-client -t "$1"
-}
+CURRENT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# shellcheck source=scripts/tmux-fzf-common.sh
+source "$CURRENT_DIR/tmux-fzf-common.sh"
 
-fzf_tmux_session() {
+check_dependencies
+
+tmux_session_open() {
 	local SESSION_NAME
 
 	# List sessions, extract their names, and use fzf to select one.
@@ -17,4 +18,4 @@ fzf_tmux_session() {
 	fi
 }
 
-fzf_tmux_session "$@"
+tmux_session_open "$@"
