@@ -16,8 +16,8 @@ set -g @plugin 'tmux-contrib/tmux-fzf'
 
 You can use the following key bindings to use the plugin:
 
-- `<prefix>-C-p` to search for projects
-- `<prefix>-C-s` to search for sessions
+- `<prefix>-P` to search for projects
+- `<prefix>-S` to search for sessions
 
 ## Configuration
 
