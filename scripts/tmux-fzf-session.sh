@@ -6,15 +6,32 @@ source "$CURRENT_DIR/tmux-fzf-common.sh"
 
 check_dependencies
 
+# Open an existing tmux session using fzf selection.
+#
+# Presents an fzf menu of all running tmux sessions and switches to the selected one.
+# The fzf menu includes interactive key bindings:
+#   - ctrl-x: Kill the highlighted session and reload the list
+#   - space: Jump mode for quick navigation
+#   - jump: Accept selection after jump
+#
+# Globals:
+#   None
+# Arguments:
+#   None
+# Returns:
+#   0 on success or if no session was selected
+# Dependencies:
+#   - fzf: for interactive session selection
+#   - tmux ls: to list available sessions
 tmux_session_open() {
-	local SESSION_NAME
+	local session_name
 
 	# List sessions, extract their names, and use fzf to select one.
-	SESSION_NAME=$(tmux ls | cut -d: -f1 | fzf --tmux=100%,100% --border=none --header=' Session' --bind='ctrl-x:execute(tmux kill-session -t {})+reload(tmux ls | cut -d: -f1),space:jump,jump:accept')
+	session_name=$(tmux ls | cut -d: -f1 | fzf --tmux=100%,100% --border=none --header=' Session' --bind='ctrl-x:execute(tmux kill-session -t {})+reload(tmux ls | cut -d: -f1),space:jump,jump:accept')
 
 	# If a session is selected, switch to it.
-	if [[ -n $SESSION_NAME ]]; then
-		tmux_switch_to "$SESSION_NAME"
+	if [[ -n $session_name ]]; then
+		tmux_switch_to "$session_name"
 	fi
 }
 

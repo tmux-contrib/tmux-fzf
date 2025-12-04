@@ -11,28 +11,47 @@ check_dependencies
 #
 # Provides functions for managing tmux sessions with fzf.
 
+# Create or switch to a tmux session for a project directory.
+#
+# If a directory path is provided as an argument, creates or switches to a session
+# for that directory. Otherwise, presents an fzf menu to select a project directory
+# from the configured projects path. The fzf menu includes a ctrl-o binding to open
+# the selected project's GitHub repository in the browser using the gh CLI.
+#
+# Globals:
+#   None
+# Arguments:
+#   $1 - (Optional) The directory path to create/switch to a session for
+# Returns:
+#   0 on success or if no directory was selected
+# Dependencies:
+#   - fzf: for interactive directory selection
+#   - gh: (optional) for opening GitHub repositories with ctrl-o
+#   - tmux get-option: to read @tmux-fzf-projects-path configuration
 tmux_session_project() {
-	local SESSION_DIR_PATH SESSION_NAME
+	local session_name
+	local session_dir_path
 
 	if [[ $# -eq 1 ]]; then
-		SESSION_DIR_PATH=$1
+		session_dir_path=$1
 	else
-		SESSION_PROJECT_PATH=$(tmux get-option -gq "@tmux-fzf-projects-path" || echo "$HOME/Projects")
-		SESSION_DIR_PATH=$(find "$SESSION_PROJECT_PATH" -mindepth 2 -maxdepth 3 -type d | fzf --tmux=100%,100% --border=none --header='  Projects')
+		local session_project_path
+		session_project_path=$(tmux get-option -gq "@tmux-fzf-projects-path" || echo "$HOME/Projects")
+		session_dir_path=$(find "$session_project_path" -mindepth 2 -maxdepth 3 -type d | fzf --tmux=100%,100% --border=none --header='  Projects' --bind='ctrl-o:execute(cd {} && gh repo view --web)+abort')
 	fi
 
 	# Exit silently if no directory was selected.
-	if [[ -z "$SESSION_DIR_PATH" ]]; then
+	if [[ -z "$session_dir_path" ]]; then
 		return 0
 	fi
 
-	SESSION_NAME=$(tmux_session_name "$SESSION_DIR_PATH")
+	session_name=$(tmux_session_name "$session_dir_path")
 
-	if ! tmux_has_session "$SESSION_NAME"; then
-		tmux_new_session "$SESSION_NAME" "$SESSION_DIR_PATH"
+	if ! tmux_has_session "$session_name"; then
+		tmux_new_session "$session_name" "$session_dir_path"
 	fi
 
-	tmux_switch_to "$SESSION_NAME"
+	tmux_switch_to "$session_name"
 }
 
 tmux_session_project "$@"

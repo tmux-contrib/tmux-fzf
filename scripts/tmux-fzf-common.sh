@@ -1,5 +1,17 @@
 #!/bin/bash
 
+# Check if required dependencies are installed.
+#
+# Verifies that fzf is installed and available in the system PATH.
+# If fzf is not found, displays an error message and exits with status 1.
+#
+# Globals:
+#   None
+# Arguments:
+#   None
+# Returns:
+#   0 if all dependencies are installed
+#   1 if any dependency is missing
 check_dependencies() {
 	if ! command -v fzf &>/dev/null; then
 		tmux display-message "Error: fzf is not installed. Please install it to use this plugin."
@@ -8,21 +20,63 @@ check_dependencies() {
 }
 
 # Switch to a given tmux session.
+#
+# Switches the current tmux client to the specified session.
+#
+# Globals:
+#   None
+# Arguments:
+#   $1 - The name of the tmux session to switch to
+# Returns:
+#   0 on success, non-zero on failure
 tmux_switch_to() {
 	tmux switch-client -t "$1"
 }
 
 # Check if a tmux session exists.
+#
+# Determines whether a tmux session with the given name is currently running.
+#
+# Globals:
+#   None
+# Arguments:
+#   $1 - The name of the tmux session to check
+# Returns:
+#   0 if the session exists
+#   1 if the session does not exist
 tmux_has_session() {
 	tmux list-sessions 2>/dev/null | grep -q "^$1:"
 }
 
 # Create a new tmux session.
+#
+# Creates a new detached tmux session with the specified name and working directory.
+#
+# Globals:
+#   None
+# Arguments:
+#   $1 - The name for the new tmux session
+#   $2 - The working directory path for the session
+# Returns:
+#   0 on success, non-zero on failure
 tmux_new_session() {
 	tmux new-session -ds "$1" -c "$2"
 }
 
 # Derive a session name from a directory path.
+#
+# Generates a tmux session name by combining the workspace (parent directory)
+# and project (directory name) with a forward slash, and replacing dots with
+# underscores to ensure tmux compatibility.
+#
+# Globals:
+#   None
+# Arguments:
+#   $1 - The directory path to derive the session name from
+# Returns:
+#   0 on success
+# Outputs:
+#   The generated session name in the format "workspace/project"
 tmux_session_name() {
 	local PROJECT WORKSPACE
 
