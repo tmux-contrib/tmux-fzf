@@ -37,7 +37,7 @@ tmux_session_project() {
 	else
 		local session_project_path
 		session_project_path=$(tmux get-option -gq "@tmux-fzf-projects-path" || echo "$HOME/Projects")
-		session_dir_path=$(find "$session_project_path" -mindepth 2 -maxdepth 3 -type d | fzf --tmux=100%,100% --border=none --header='  Projects' --bind='ctrl-o:execute(cd {} && gh repo view --web)+abort')
+		session_dir_path=$(find "$session_project_path" -mindepth 2 -maxdepth 3 -type d | fzf --tmux=100%,100% --border=none --header='  Projects' --bind='ctrl-o:execute(cd {} && gh repo view --web)')
 	fi
 
 	# Exit silently if no directory was selected.
