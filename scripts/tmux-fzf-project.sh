@@ -45,10 +45,15 @@ tmux_session_project() {
 
 		if [[ "$git_only" == "true" ]]; then
 			fzf_header='  Projects'
-			session_dir_path=$(fd -H -t d '^\.git$' --max-depth 4 --min-depth 3 . "$session_project_path" --exec dirname | fzf --tmux=100%,100% --border=none --header="$fzf_header" --bind='ctrl-o:execute(cd {} && gh repo view --web)+abort')
+			session_dir_path=$(cd "$session_project_path" && fd -H -t d '^\.git$' --max-depth 4 --min-depth 3 . --exec dirname | sed 's|^\./||' | fzf --tmux=100%,100% --border=none --header="$fzf_header" --bind="ctrl-o:execute(cd '$session_project_path/{}' && gh repo view --web)+abort")
 		else
 			fzf_header='  Projects'
-			session_dir_path=$(fd -t d --max-depth 3 --min-depth 2 . "$session_project_path" | fzf --tmux=100%,100% --border=none --header="$fzf_header")
+			session_dir_path=$(cd "$session_project_path" && fd -t d --max-depth 3 --min-depth 2 . | sed 's|^\./||' | fzf --tmux=100%,100% --border=none --header="$fzf_header")
+		fi
+
+		# Convert relative path back to absolute
+		if [[ -n "$session_dir_path" && "$session_dir_path" != /* ]]; then
+			session_dir_path="$session_project_path/$session_dir_path"
 		fi
 	fi
 
