@@ -21,7 +21,21 @@ You can use the following key bindings to use the plugin:
 
 ## Configuration
 
-You can change the default projects directory by adding the following line to your tmux config:
+You can customize the plugin behavior with the following options in your tmux config:
 
-`set -g @tmux-fzf-projects-path "~/your/path/to/projects"`
+### Projects Directory
+
+Change the default projects directory:
+
+```shell
+set -g @tmux-fzf-projects-path "~/your/path/to/projects"
+```
+
+### Git Repositories Only
+
+By default, the project search only shows directories that contain a `.git` subdirectory (i.e., git repositories). To show all directories instead:
+
+```shell
+set -g @tmux-fzf-projects-git-only "false"
+```
 

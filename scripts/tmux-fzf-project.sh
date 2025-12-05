@@ -18,6 +18,9 @@ check_dependencies
 # from the configured projects path. The fzf menu includes a ctrl-o binding to open
 # the selected project's GitHub repository in the browser using the gh CLI.
 #
+# By default, only directories containing a .git subdirectory are shown. This can
+# be disabled by setting @tmux-fzf-projects-git-only to "false".
+#
 # Globals:
 #   None
 # Arguments:
@@ -27,7 +30,7 @@ check_dependencies
 # Dependencies:
 #   - fzf: for interactive directory selection
 #   - gh: (optional) for opening GitHub repositories with ctrl-o
-#   - tmux get-option: to read @tmux-fzf-projects-path configuration
+#   - tmux get-option: to read @tmux-fzf-projects-path and @tmux-fzf-projects-git-only configuration
 tmux_session_project() {
 	local session_name
 	local session_dir_path
@@ -35,9 +38,17 @@ tmux_session_project() {
 	if [[ $# -eq 1 ]]; then
 		session_dir_path=$1
 	else
-		local session_project_path
+		local session_project_path git_only fzf_header
 		session_project_path=$(tmux get-option -gq "@tmux-fzf-projects-path" || echo "$HOME/Projects")
-		session_dir_path=$(find "$session_project_path" -mindepth 2 -maxdepth 3 -type d | fzf --tmux=100%,100% --border=none --header='  Projects' --bind='ctrl-o:execute(cd {} && gh repo view --web)+abort')
+		git_only=$(tmux get-option -gq "@tmux-fzf-projects-git-only" || echo "true")
+
+		if [[ "$git_only" == "true" ]]; then
+			fzf_header='  Projects'
+			session_dir_path=$(find "$session_project_path" -mindepth 2 -maxdepth 3 -type d -exec test -d '{}/.git' \; -print | fzf --tmux=100%,100% --border=none --header="$fzf_header" --bind='ctrl-o:execute(cd {} && gh repo view --web)+abort')
+		else
+			fzf_header='  Projects'
+			session_dir_path=$(find "$session_project_path" -mindepth 2 -maxdepth 3 -type d | fzf --tmux=100%,100% --border=none --header="$fzf_header")
+		fi
 	fi
 
 	# Exit silently if no directory was selected.
