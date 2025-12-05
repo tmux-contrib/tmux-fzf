@@ -29,6 +29,7 @@ check_dependencies
 #   0 on success or if no directory was selected
 # Dependencies:
 #   - fzf: for interactive directory selection
+#   - fd: for fast directory traversal (replaces find)
 #   - gh: (optional) for opening GitHub repositories with ctrl-o
 #   - tmux get-option: to read @tmux-fzf-projects-path and @tmux-fzf-projects-git-only configuration
 tmux_session_project() {
@@ -44,10 +45,10 @@ tmux_session_project() {
 
 		if [[ "$git_only" == "true" ]]; then
 			fzf_header='  Projects'
-			session_dir_path=$(find "$session_project_path" -mindepth 2 -maxdepth 3 -type d -exec test -d '{}/.git' \; -print | fzf --tmux=100%,100% --border=none --header="$fzf_header" --bind='ctrl-o:execute(cd {} && gh repo view --web)+abort')
+			session_dir_path=$(fd -H -t d '^\.git$' --max-depth 4 --min-depth 3 . "$session_project_path" --exec dirname | fzf --tmux=100%,100% --border=none --header="$fzf_header" --bind='ctrl-o:execute(cd {} && gh repo view --web)+abort')
 		else
 			fzf_header='  Projects'
-			session_dir_path=$(find "$session_project_path" -mindepth 2 -maxdepth 3 -type d | fzf --tmux=100%,100% --border=none --header="$fzf_header")
+			session_dir_path=$(fd -t d --max-depth 3 --min-depth 2 . "$session_project_path" | fzf --tmux=100%,100% --border=none --header="$fzf_header")
 		fi
 	fi
 

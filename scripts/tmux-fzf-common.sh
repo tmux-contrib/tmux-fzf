@@ -2,8 +2,8 @@
 
 # Check if required dependencies are installed.
 #
-# Verifies that fzf is installed and available in the system PATH.
-# If fzf is not found, displays an error message and exits with status 1.
+# Verifies that fzf and fd are installed and available in the system PATH.
+# If any dependency is not found, displays an error message and exits with status 1.
 #
 # Globals:
 #   None
@@ -15,6 +15,10 @@
 check_dependencies() {
 	if ! command -v fzf &>/dev/null; then
 		tmux display-message "Error: fzf is not installed. Please install it to use this plugin."
+		exit 1
+	fi
+	if ! command -v fd &>/dev/null; then
+		tmux display-message "Error: fd is not installed. Please install it to use this plugin."
 		exit 1
 	fi
 }
