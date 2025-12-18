@@ -1,41 +1,43 @@
 # tmux-fzf
 
-A fzf plugin for tmux
+A tmux plugin for fuzzy finding projects and sessions using [fzf](https://github.com/junegunn/fzf).
 
 ## Installation
 
-This is a plugin for [tmux plugin
-manager](https://github.com/tmux-plugins/tpm). You can install it by adding the
-following line in your tmux config.
+```tmux
+# configure the tmux plugins manager
+set -g @plugin "tmux-plugins/tpm"
 
-```shell
+# official plugins
 set -g @plugin 'tmux-contrib/tmux-fzf'
 ```
 
-## Getting Started
+## Usage
 
-You can use the following key bindings to use the plugin:
+| Key Binding   | Description                    |
+|---------------|--------------------------------|
+| `prefix` + <kbd>P</kbd> | Search and switch to projects  |
+| `prefix` + <kbd>S</kbd> | Search and switch to sessions  |
 
-- `<prefix>-P` to search for projects
-- `<prefix>-S` to search for sessions
+### Project Picker
 
-## Configuration
+- Select a project directory to create or switch to a session
+- Press <kbd>Ctrl</kbd>+<kbd>O</kbd> to open the project's GitHub repository in the browser
 
-You can customize the plugin behavior with the following options in your tmux config:
+### Session Picker
 
-### Projects Directory
+- Select a session to switch to it
+- Press <kbd>Ctrl</kbd>+<kbd>X</kbd> to kill the highlighted session
+- Press <kbd>Space</kbd> for jump mode
 
-Change the default projects directory:
+### Options
 
-```shell
-set -g @tmux-fzf-projects-path "~/your/path/to/projects"
+Add these options to your `~/.tmux.conf`:
+
+```tmux
+# Set the projects directory (default: ~/Projects)
+set -g @tmux-fzf-projects-path "~/Projects"
+
+# Show only git repositories (default: true)
+set -g @tmux-fzf-projects-git-only "true"
 ```
-
-### Git Repositories Only
-
-By default, the project search only shows directories that contain a `.git` subdirectory (i.e., git repositories). To show all directories instead:
-
-```shell
-set -g @tmux-fzf-projects-git-only "false"
-```
-
