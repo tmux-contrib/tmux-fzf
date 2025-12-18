@@ -1,8 +1,8 @@
 #!/bin/bash
 
 CURRENT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-# shellcheck source=scripts/tmux-fzf-common.sh
-source "$CURRENT_DIR/tmux-fzf-common.sh"
+# shellcheck source=scripts/core.sh
+source "$CURRENT_DIR/core.sh"
 
 check_dependencies
 
