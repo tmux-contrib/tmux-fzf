@@ -89,3 +89,37 @@ tmux_session_name() {
 
 	echo "${WORKSPACE}/${PROJECT}" | tr . _
 }
+
+fd_list() {
+	local dir_path="$1"
+	local git_only="$2"
+
+	if [[ "$git_only" == "true" ]]; then
+		(cd "$dir_path" && fd -H -t d '^\.git$' --max-depth 4 --min-depth 3 . --exec dirname | sed 's|^\./||')
+	else
+		(cd "$dir_path" && fd -t d --max-depth 3 --min-depth 2 . | sed 's|^\./||')
+	fi
+}
+
+# Get a tmux option value.
+#
+# Retrieves the value of a global tmux option. If the option is not set,
+# returns the provided default value.
+#
+# Globals:
+#   None
+# Arguments:
+#   $1 - The name of the tmux option to retrieve
+#   $2 - The default value to return if the option is not set
+# Outputs:
+#   The option value or default value to stdout
+# Returns:
+#   0 on success
+tmux_get_option() {
+	local option="$1"
+	local default_value="$2"
+	local option_value
+
+	option_value="$(tmux show-option -gqv "$option")"
+	[[ -n "$option_value" ]] && echo "$option_value" || echo "$default_value"
+}

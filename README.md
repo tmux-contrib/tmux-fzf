@@ -14,10 +14,10 @@ set -g @plugin 'tmux-contrib/tmux-fzf'
 
 ## Usage
 
-| Key Binding   | Description                    |
-|---------------|--------------------------------|
-| `prefix` + <kbd>P</kbd> | Search and switch to projects  |
-| `prefix` + <kbd>S</kbd> | Search and switch to sessions  |
+| Key Binding             | Description                   |
+| ----------------------- | ----------------------------- |
+| `prefix` + <kbd>P</kbd> | Search and switch to projects |
+| `prefix` + <kbd>S</kbd> | Search and switch to sessions |
 
 ### Project Picker
 
@@ -36,8 +36,14 @@ Add these options to your `~/.tmux.conf`:
 
 ```tmux
 # Set the projects directory (default: ~/Projects)
-set -g @tmux-fzf-projects-path "~/Projects"
+set -g @fzf-projects-path "~/Projects"
 
 # Show only git repositories (default: true)
-set -g @tmux-fzf-projects-git-only "true"
+set -g @fzf-projects-git-only "true"
+
+# Change the Projects key bindings
+set -g @fzf-projects-key 'T'
+
+# Change the Sessions key bindings
+set -g @fzf-sessions-key 'S'
 ```

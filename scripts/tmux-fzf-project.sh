@@ -23,8 +23,6 @@ check_dependencies
 #
 # Globals:
 #   None
-# Arguments:
-#   $1 - (Optional) The directory path to create/switch to a session for
 # Returns:
 #   0 on success or if no directory was selected
 # Dependencies:
@@ -35,26 +33,30 @@ check_dependencies
 tmux_session_project() {
 	local session_name
 	local session_dir_path
+	local projects_git_only
+	local projects_dir_path
 
-	if [[ $# -eq 1 ]]; then
-		session_dir_path=$1
+	projects_git_only="$(tmux_get_option "@fzf-projects-git-only" "true")"
+	projects_dir_path="$(tmux_get_option "@fzf-projects-path" "$HOME/Projects")"
+
+	# list the available directories
+	projects_dir_list=$(fd_list "$projects_dir_path" "$projects_git_only")
+
+	if [[ "$projects_git_only" == "true" ]]; then
+		session_dir_path=$(
+			echo "$projects_dir_list" | fzf --ansi \
+				--border none \
+				--tmux 100%,100% \
+				--header "  Projects" \
+				--bind "ctrl-o:execute(cd '$projects_dir_path/{}' && gh repo view --web)+abort"
+		)
 	else
-		local session_project_path git_only fzf_header
-		session_project_path=$(tmux get-option -gq "@tmux-fzf-projects-path" || echo "$HOME/Projects")
-		git_only=$(tmux get-option -gq "@tmux-fzf-projects-git-only" || echo "true")
-
-		if [[ "$git_only" == "true" ]]; then
-			fzf_header='  Projects'
-			session_dir_path=$(cd "$session_project_path" && fd -H -t d '^\.git$' --max-depth 4 --min-depth 3 . --exec dirname | sed 's|^\./||' | fzf --tmux=100%,100% --border=none --header="$fzf_header" --bind="ctrl-o:execute(cd '$session_project_path/{}' && gh repo view --web)+abort")
-		else
-			fzf_header='  Projects'
-			session_dir_path=$(cd "$session_project_path" && fd -t d --max-depth 3 --min-depth 2 . | sed 's|^\./||' | fzf --tmux=100%,100% --border=none --header="$fzf_header")
-		fi
-
-		# Convert relative path back to absolute
-		if [[ -n "$session_dir_path" && "$session_dir_path" != /* ]]; then
-			session_dir_path="$session_project_path/$session_dir_path"
-		fi
+		session_dir_path=$(
+			echo "$projects_dir_list" | fzf --ansi \
+				--border none \
+				--tmux 100%,100% \
+				--header "  Projects"
+		)
 	fi
 
 	# Exit silently if no directory was selected.
@@ -62,6 +64,7 @@ tmux_session_project() {
 		return 0
 	fi
 
+	session_dir_path="$projects_dir_path/$session_dir_path"
 	session_name=$(tmux_session_name "$session_dir_path")
 
 	if ! tmux_has_session "$session_name"; then
