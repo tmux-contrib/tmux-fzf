@@ -27,7 +27,13 @@ tmux_session_open() {
 	local session_name
 
 	# List sessions, extract their names, and use fzf to select one.
-	session_name=$(tmux ls | cut -d: -f1 | fzf --tmux=100%,100% --border=none --header=' Session' --bind='ctrl-x:execute(tmux kill-session -t {})+reload(tmux ls | cut -d: -f1),space:jump,jump:accept')
+	session_name=$(
+		tmux ls | cut -d: -f1 | fzf --ansi \
+			--border none \
+			--tmux 100%,100% \
+			--header " Session" \
+			--bind "ctrl-x:execute(tmux kill-session -t {})+reload(tmux ls | cut -d: -f1),space:jump,jump:accept"
+	)
 
 	# If a session is selected, switch to it.
 	if [[ -n $session_name ]]; then
