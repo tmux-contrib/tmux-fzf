@@ -33,31 +33,29 @@ check_dependencies
 tmux_session_project() {
 	local session_name
 	local session_dir_path
+	local session_params=()
 	local projects_git_only
 	local projects_dir_path
 
 	projects_git_only="$(tmux_get_option "@fzf-projects-git-only" "true")"
 	projects_dir_path="$(tmux_get_option "@fzf-projects-path" "$HOME/Projects")"
-
 	# list the available directories
 	projects_dir_list=$(fd_list "$projects_dir_path" "$projects_git_only")
 
 	if [[ "$projects_git_only" == "true" ]]; then
-		session_dir_path=$(
-			echo "$projects_dir_list" | fzf --ansi \
-				--border none \
-				--tmux 100%,100% \
-				--header "  Projects" \
-				--bind "ctrl-o:execute(cd '$projects_dir_path/{}' && gh repo view --web)+abort"
-		)
+		session_params+=(--header "  Projects")
+		# Add ctrl-o binding to open GitHub repo in browser if gh CLI is available.
+		session_params+=(--bind "ctrl-o:execute(cd '$projects_dir_path/{}' && gh repo view --web)+abort")
 	else
-		session_dir_path=$(
-			echo "$projects_dir_list" | fzf --ansi \
-				--border none \
-				--tmux 100%,100% \
-				--header "  Projects"
-		)
+		session_params+=(--header "  Projects")
 	fi
+
+	session_dir_path=$(
+		echo "$projects_dir_list" | fzf --ansi \
+			--border none \
+			--tmux 100%,100% \
+			"${session_params[@]}"
+	)
 
 	# Exit silently if no directory was selected.
 	if [[ -z "$session_dir_path" ]]; then
