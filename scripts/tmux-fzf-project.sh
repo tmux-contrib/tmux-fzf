@@ -50,6 +50,12 @@ tmux_session_project() {
 		session_params+=(--header "  Projects")
 	fi
 
+	upterm="$TMUX_PLUGIN_MANAGER_PATH/tmux-upterm/scripts/tmux-upterm.sh"
+	# Add ctrl-u binding to open selected project in upterm if available.
+	if [[ -f "$upterm" ]]; then
+		session_params+=(--bind "ctrl-t:execute($upterm {})+abort")
+	fi
+
 	session_dir_path=$(
 		echo "$projects_dir_list" | fzf --ansi \
 			--border none \
