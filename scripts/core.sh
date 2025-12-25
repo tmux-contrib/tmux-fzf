@@ -98,12 +98,12 @@ tmux_new_session() {
 # Outputs:
 #   The generated session name in the format "workspace/project"
 tmux_session_name() {
-	local PROJECT WORKSPACE
+	local project workspace
 
-	PROJECT=$(basename "$1")
-	WORKSPACE=$(basename "$(dirname "$1")")
+	project=$(basename "$1")
+	workspace=$(basename "$(dirname "$1")")
 
-	echo "${WORKSPACE}/${PROJECT}" | tr . _
+	echo "$workspace/$project" | tr . _
 }
 
 # Get a tmux option value.

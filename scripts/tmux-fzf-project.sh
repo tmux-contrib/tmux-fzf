@@ -44,8 +44,11 @@ tmux_session_project() {
 
 	if [[ "$projects_git_only" == "true" ]]; then
 		session_params+=(--header "  Projects")
-		# Add ctrl-o binding to open GitHub repo in browser if gh CLI is available.
-		session_params+=(--bind "ctrl-o:execute(cd '$projects_dir_path/{}' && gh repo view --web)+abort")
+
+		if command -v gh &>/dev/null; then
+			# Add ctrl-o binding to open GitHub repo in browser if gh CLI is available.
+			session_params+=(--bind "ctrl-o:execute(cd '$projects_dir_path/{}' && gh repo view --web)+abort")
+		fi
 	else
 		session_params+=(--header "  Projects")
 	fi
@@ -53,7 +56,7 @@ tmux_session_project() {
 	upterm="$TMUX_PLUGIN_MANAGER_PATH/tmux-upterm/scripts/tmux-upterm.sh"
 	# Add ctrl-u binding to open selected project in upterm if available.
 	if [[ -f "$upterm" ]]; then
-		session_params+=(--bind "ctrl-t:execute($upterm {})+abort")
+		session_params+=(--bind "ctrl-t:execute($upterm '$projects_dir_path/{}')+abort")
 	fi
 
 	session_dir_path=$(
