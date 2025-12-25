@@ -70,20 +70,18 @@ tmux_has_session() {
 
 # List all tmux sessions.
 #
-# Lists all running tmux sessions. If the gum command is available, highlights
+# Lists all running tmux sessions by name.
+#
+# Globals:
+#   None
+# Arguments:
+#   None
+# Outputs:
+#   Session names to stdout, one per line
+# Returns:
+#   0 on success
 tmux_list_sessions() {
-	if command -v gum >/dev/null 2>&1; then
-		tmux list-sessions -F '#{session_name} #{@is_upterm_session}' |
-			while read -r name flag; do
-				if [ "$flag" = "1" ] || [ "$flag" = "true" ]; then
-					gum style --foreground 9 "$name"
-				else
-					echo "$name"
-				fi
-			done
-	else
-		tmux list-sessions -F '#{session_name}'
-	fi
+	tmux list-sessions -F '#{session_name}'
 }
 
 # Create a new tmux session.
