@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+[ -z "$DEBUG" ] || set -x
+
 CURRENT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # shellcheck source=scripts/core.sh
 source "$CURRENT_DIR/core.sh"
