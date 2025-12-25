@@ -28,11 +28,11 @@ tmux_session_open() {
 
 	# List sessions, extract their names, and use fzf to select one.
 	session_name=$(
-		tmux ls | cut -d: -f1 | fzf --ansi \
+		tmux_list_sessions | fzf --ansi \
 			--border none \
 			--tmux 100%,100% \
 			--header " Session" \
-			--bind "ctrl-x:execute(tmux kill-session -t {})+reload(tmux ls | cut -d: -f1),space:jump,jump:accept"
+			--bind "ctrl-x:execute(tmux kill-session -t {})+reload(tmux list-sessions -F '#{session_name}'),space:jump,jump:accept"
 	)
 
 	# If a session is selected, switch to it.

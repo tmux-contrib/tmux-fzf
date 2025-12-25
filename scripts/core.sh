@@ -68,6 +68,24 @@ tmux_has_session() {
 	tmux list-sessions 2>/dev/null | grep -q "^$1:"
 }
 
+# List all tmux sessions.
+#
+# Lists all running tmux sessions. If the gum command is available, highlights
+tmux_list_sessions() {
+	if command -v gum >/dev/null 2>&1; then
+		tmux list-sessions -F '#{session_name} #{@is_upterm_session}' |
+			while read -r name flag; do
+				if [ "$flag" = "1" ] || [ "$flag" = "true" ]; then
+					gum style --foreground 9 "$name"
+				else
+					echo "$name"
+				fi
+			done
+	else
+		tmux list-sessions -F '#{session_name}'
+	fi
+}
+
 # Create a new tmux session.
 #
 # Creates a new detached tmux session with the specified name and working directory.
