@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
-CURRENT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-# shellcheck source=scripts/core.sh
-source "$CURRENT_DIR/core.sh"
+_tmux_fzf_project_source_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# shellcheck source=core.sh
+source "$_tmux_fzf_project_source_dir/core.sh"
 
 check_dependencies
 
@@ -48,12 +48,13 @@ tmux_session_project() {
 	if [[ "$projects_git_only" == "true" ]]; then
 		session_params+=(--header "  Projects")
 
-		if command -v gh &>/dev/null; then
+		if "$_tmux_fzf_project_source_dir/tmux-fzf-gh.sh" available; then
 			# Add ctrl-o binding to open GitHub repo in browser if gh CLI is available.
-			session_params+=(--bind "ctrl-o:execute(cd '$projects_dir_path/{}' && gh repo view --web)+abort")
+			session_params+=(--bind "ctrl-o:execute($_tmux_fzf_project_source_dir/tmux-fzf-gh.sh open '$projects_dir_path/{}')+abort")
 			# Preview repo info (hidden by default, toggle with ctrl-/).
-			session_params+=(--preview "cd '$projects_dir_path/{}' && gh repo view --json '$projects_jq_fields' --jq '$projects_jq_filter'")
-			session_params+=(--preview-window "down,2")
+			session_params+=(--preview "$_tmux_fzf_project_source_dir/tmux-fzf-gh.sh preview '$projects_dir_path/{}' '$projects_jq_fields' '$projects_jq_filter'")
+			session_params+=(--preview-window "top,2")
+			session_params+=(--preview-border "sharp")
 		fi
 	else
 		session_params+=(--header "  Projects")
