@@ -36,9 +36,12 @@ tmux_session_project() {
 	local session_params=()
 	local projects_git_only
 	local projects_dir_path
+	local projects_jq_filter
 
 	projects_git_only="$(tmux_get_option "@fzf-projects-git-only" "true")"
 	projects_dir_path="$(tmux_get_option "@fzf-projects-path" "$HOME/Projects")"
+	projects_jq_fields='url,description'
+	projects_jq_filter='.description // "No description", .url'
 	# list the available directories
 	projects_dir_list=$(fd_list "$projects_dir_path" "$projects_git_only")
 
@@ -48,6 +51,9 @@ tmux_session_project() {
 		if command -v gh &>/dev/null; then
 			# Add ctrl-o binding to open GitHub repo in browser if gh CLI is available.
 			session_params+=(--bind "ctrl-o:execute(cd '$projects_dir_path/{}' && gh repo view --web)+abort")
+			# Preview repo info (hidden by default, toggle with ctrl-/).
+			session_params+=(--preview "cd '$projects_dir_path/{}' && gh repo view --json '$projects_jq_fields' --jq '$projects_jq_filter'")
+			session_params+=(--preview-window "down,2")
 		fi
 	else
 		session_params+=(--header "  Projects")
@@ -62,6 +68,7 @@ tmux_session_project() {
 	session_dir_path=$(
 		echo "$projects_dir_list" | fzf --ansi \
 			--border none \
+			--delimiter '/' \
 			--tmux 100%,100% \
 			"${session_params[@]}"
 	)

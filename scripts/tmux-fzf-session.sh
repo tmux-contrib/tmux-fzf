@@ -31,6 +31,7 @@ tmux_session_open() {
 	session_name=$(
 		$session_list | fzf --ansi \
 			--border none \
+			--delimiter '/' \
 			--tmux 100%,100% \
 			--color='current-bg:-1' \
 			--header " Session" \
