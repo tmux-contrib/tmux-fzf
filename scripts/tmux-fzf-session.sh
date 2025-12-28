@@ -33,6 +33,7 @@ tmux_session_open() {
 			--border none \
 			--tmux 100%,100% \
 			--header " Session" \
+			--jump-labels "123456789" \
 			--bind "ctrl-x:execute(tmux kill-session -t {})+reload($session_list),space:jump,jump:accept"
 	)
 
