@@ -32,6 +32,7 @@ tmux_session_open() {
 		$session_list | fzf --ansi \
 			--border none \
 			--tmux 100%,100% \
+			--color='current-bg:-1' \
 			--header " Session" \
 			--jump-labels "123456789" \
 			--bind "ctrl-x:execute(tmux kill-session -t {})+reload($session_list),space:jump,jump:accept"
