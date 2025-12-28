@@ -3,9 +3,9 @@
 # GitHub CLI helper script for tmux-fzf.
 #
 # Usage:
-#   tmux-gh.sh available          - Check if gh CLI is installed (exit 0/1)
-#   tmux-gh.sh open <path>        - Open repository in browser
-#   tmux-gh.sh preview <path> [fields] [filter] - Get repo info for preview
+#   tmux-fzf-gh.sh available      - Check if gh CLI is installed (exit 0/1)
+#   tmux-fzf-gh.sh open <path>    - Open repository in browser
+#   tmux-fzf-gh.sh preview <path> - Get repo info for preview
 
 set -e
 
@@ -20,9 +20,7 @@ gh_open() {
 
 gh_preview() {
 	local repo_path="$1"
-	local fields="${2:-url,description}"
-	local filter="${3:-.description // \"No description\", .url}"
-	cd "$repo_path" && gh repo view --json "$fields" --jq "$filter"
+	cd "$repo_path" && gh repo view --json 'url,description' --jq '.description // "No description", .url'
 }
 
 case "${1:-}" in
@@ -30,7 +28,7 @@ available)
 	gh_available
 	;;
 preview)
-	gh_preview "$2" "$3" "$4"
+	gh_preview "$2"
 	;;
 open)
 	gh_open "$2"

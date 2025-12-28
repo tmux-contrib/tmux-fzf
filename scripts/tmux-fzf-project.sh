@@ -33,37 +33,35 @@ check_dependencies
 tmux_session_project() {
 	local session_name
 	local session_dir_path
-	local session_params=()
 	local projects_git_only
 	local projects_dir_path
-	local projects_jq_filter
 
 	projects_git_only="$(tmux_get_option "@fzf-projects-git-only" "true")"
 	projects_dir_path="$(tmux_get_option "@fzf-projects-path" "$HOME/Projects")"
-	projects_jq_fields='url,description'
-	projects_jq_filter='.description // "No description", .url'
 	# list the available directories
 	projects_dir_list=$(fd_list "$projects_dir_path" "$projects_git_only")
 
+	local fzf_params=()
+	# Configure fzf parameters based on git-only setting.
 	if [[ "$projects_git_only" == "true" ]]; then
-		session_params+=(--header "  Projects")
+		fzf_params+=(--header "  Projects")
 
 		if "$_tmux_fzf_project_source_dir/tmux-fzf-gh.sh" available; then
 			# Add ctrl-o binding to open GitHub repo in browser if gh CLI is available.
-			session_params+=(--bind "ctrl-o:execute($_tmux_fzf_project_source_dir/tmux-fzf-gh.sh open '$projects_dir_path/{}')+abort")
+			fzf_params+=(--bind "ctrl-o:execute-silent($_tmux_fzf_project_source_dir/tmux-fzf-gh.sh open '$projects_dir_path/{}')")
 			# Preview repo info (hidden by default, toggle with ctrl-/).
-			session_params+=(--preview "$_tmux_fzf_project_source_dir/tmux-fzf-gh.sh preview '$projects_dir_path/{}' '$projects_jq_fields' '$projects_jq_filter'")
-			session_params+=(--preview-window "top,2")
-			session_params+=(--preview-border "sharp")
+			fzf_params+=(--preview "$_tmux_fzf_project_source_dir/tmux-fzf-gh.sh preview '$projects_dir_path/{}'")
+			fzf_params+=(--preview-window "top,2")
+			fzf_params+=(--preview-border "sharp")
 		fi
 	else
-		session_params+=(--header "  Projects")
+		fzf_params+=(--header "  Projects")
 	fi
 
 	upterm="$TMUX_PLUGIN_MANAGER_PATH/tmux-upterm/scripts/tmux-upterm.sh"
 	# Add ctrl-u binding to open selected project in upterm if available.
 	if [[ -f "$upterm" ]]; then
-		session_params+=(--bind "ctrl-t:execute($upterm '$projects_dir_path/{}')+abort")
+		fzf_params+=(--bind "ctrl-t:execute($upterm '$projects_dir_path/{}')+abort")
 	fi
 
 	session_dir_path=$(
@@ -71,7 +69,7 @@ tmux_session_project() {
 			--border none \
 			--delimiter '/' \
 			--tmux 100%,100% \
-			"${session_params[@]}"
+			"${fzf_params[@]}"
 	)
 
 	# Exit silently if no directory was selected.

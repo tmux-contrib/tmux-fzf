@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
-CURRENT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-# shellcheck source=scripts/core.sh
-source "$CURRENT_DIR/core.sh"
+_tmux_fzf_session_source_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# shellcheck source=core.sh
+source "$_tmux_fzf_session_source_dir/core.sh"
 
 check_dependencies
 
@@ -25,7 +25,7 @@ check_dependencies
 #   - tmux ls: to list available sessions
 tmux_session_open() {
 	local session_name
-	local session_list="$CURRENT_DIR/tmux-fzf-upterm.sh"
+	local session_list="$_tmux_fzf_session_source_dir/tmux-fzf-upterm.sh"
 
 	# List sessions, extract their names, and use fzf to select one.
 	session_name=$(
