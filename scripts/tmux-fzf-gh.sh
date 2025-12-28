@@ -13,14 +13,14 @@ gh_available() {
 	command -v gh &>/dev/null
 }
 
-gh_open() {
-	local repo_path="$1"
-	cd "$repo_path" && gh repo view --web
-}
-
 gh_preview() {
 	local repo_path="$1"
 	cd "$repo_path" && gh repo view --json 'url,description' --jq '.description // "No description", .url'
+}
+
+gh_open() {
+	local repo_path="$1"
+	cd "$repo_path" && gh repo view --web
 }
 
 case "${1:-}" in
