@@ -10,6 +10,7 @@ check_dependencies
 #
 # Presents an fzf menu of all running tmux sessions and switches to the selected one.
 # The fzf menu includes interactive key bindings:
+#   - ctrl-o: Open the session's GitHub repository in browser
 #   - ctrl-x: Kill the highlighted session and reload the list
 #   - space: Jump mode for quick navigation
 #   - jump: Accept selection after jump
@@ -36,6 +37,7 @@ tmux_session_open() {
 			--color='current-bg:-1' \
 			--header " Session" \
 			--jump-labels "123456789" \
+			--bind "ctrl-o:execute-silent($_tmux_fzf_session_source_dir/tmux-fzf-cmd.sh github-open '{}')" \
 			--bind "ctrl-x:execute(tmux kill-session -t {})+reload($session_list),space:jump,jump:accept"
 	)
 

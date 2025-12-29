@@ -3,11 +3,11 @@
 # Command helper script for tmux-fzf.
 #
 # Usage:
-#   tmux-fzf-cmd.sh project-list       - List project directories (full paths)
-#   tmux-fzf-cmd.sh project-list-depth - Return fzf field index for --with-nth
-#   tmux-fzf-cmd.sh session-list       - List sessions with styling
-#   tmux-fzf-cmd.sh github-open <path> - Open repository in browser
-#   tmux-fzf-cmd.sh upterm-open <path> - Open project in upterm
+#   tmux-fzf-cmd.sh project-list              - List project directories (full paths)
+#   tmux-fzf-cmd.sh project-list-depth        - Return fzf field index for --with-nth
+#   tmux-fzf-cmd.sh session-list              - List sessions with styling
+#   tmux-fzf-cmd.sh github-open <path|ses>    - Open repository in browser (path or session name)
+#   tmux-fzf-cmd.sh upterm-open <path>        - Open project in upterm
 
 _fzf_cmd_source_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # shellcheck source=scripts/core.sh
@@ -51,9 +51,26 @@ session_list() {
 # Open GitHub repository in browser, or Finder if not a git repo.
 #
 # Arguments:
-#   $1 - Full path to the project
+#   $1 - Full path to project directory, OR session name
+#
+# If $1 is a directory, opens it directly.
+# If $1 is not a directory, treats it as a session name and looks up @fzf-session-cwd.
 github_open() {
-	cd "$1" || return 1
+	local target="$1"
+	local dir
+
+	if [[ -d "$target" ]]; then
+		dir="$target"
+	else
+		# Treat as session name, look up stored working directory
+		dir="$(tmux_get_option_for_session "$target" "@fzf-session-cwd")"
+		if [[ -z "$dir" ]]; then
+			tmux display-message "No project path stored for session: $target"
+			return 1
+		fi
+	fi
+
+	cd "$dir" || return 1
 	if git rev-parse --git-dir >/dev/null 2>&1; then
 		gh repo view --web 2>/dev/null || open .
 	else

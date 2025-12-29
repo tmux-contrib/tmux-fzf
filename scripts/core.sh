@@ -71,6 +71,7 @@ tmux_list_sessions() {
 # Create a new tmux session.
 #
 # Creates a new detached tmux session with the specified name and working directory.
+# Also stores the working directory as a session option for later retrieval.
 #
 # Globals:
 #   None
@@ -81,6 +82,7 @@ tmux_list_sessions() {
 #   0 on success, non-zero on failure
 tmux_new_session() {
 	tmux new-session -ds "$1" -c "$2"
+	tmux_set_option_for_session "$1" "@fzf-session-cwd" "$2"
 }
 
 # Derive a session name from a directory path.
@@ -127,4 +129,42 @@ tmux_get_option() {
 
 	option_value="$(tmux show-option -gqv "$option")"
 	[[ -n "$option_value" ]] && echo "$option_value" || echo "$default_value"
+}
+
+# Set a tmux session option.
+#
+# Sets the value of an option for a specific tmux session.
+#
+# Globals:
+#   None
+# Arguments:
+#   $1 - The name of the tmux session
+#   $2 - The name of the option to set
+#   $3 - The value to set
+# Returns:
+#   0 on success, non-zero on failure
+tmux_set_option_for_session() {
+	local session="$1"
+	local option="$2"
+	local value="$3"
+	tmux set-option -t "$session" "$option" "$value"
+}
+
+# Get a tmux session option value.
+#
+# Retrieves the value of an option for a specific tmux session.
+#
+# Globals:
+#   None
+# Arguments:
+#   $1 - The name of the tmux session
+#   $2 - The name of the option to retrieve
+# Outputs:
+#   The option value to stdout (empty if not set)
+# Returns:
+#   0 on success
+tmux_get_option_for_session() {
+	local session="$1"
+	local option="$2"
+	tmux show-options -t "$session" -qv "$option"
 }
