@@ -25,7 +25,7 @@ check_dependencies
 #   - tmux ls: to list available sessions
 tmux_session_open() {
 	local session_name
-	local session_list="$_tmux_fzf_session_source_dir/tmux-fzf-upterm.sh"
+	local session_list="$_tmux_fzf_session_source_dir/tmux-fzf-cmd.sh session-list"
 
 	# List sessions, extract their names, and use fzf to select one.
 	session_name=$(

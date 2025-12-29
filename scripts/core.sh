@@ -23,22 +23,6 @@ check_dependencies() {
 	fi
 }
 
-# List directories using fd.
-#
-# Arguments:
-#  $1 - The directory path to search within
-#  $2 - If "true", only include git repositories
-fd_list() {
-	local dir_path="$1"
-	local git_only="$2"
-
-	if [[ "$git_only" == "true" ]]; then
-		(cd "$dir_path" && fd -H -t d '^\.git$' --max-depth 4 --min-depth 3 . --exec dirname | sed 's|^\./||')
-	else
-		(cd "$dir_path" && fd -t d --max-depth 3 --min-depth 2 . | sed 's|^\./||')
-	fi
-}
-
 # Switch to a given tmux session.
 #
 # Switches the current tmux client to the specified session.
