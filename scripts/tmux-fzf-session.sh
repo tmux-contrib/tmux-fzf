@@ -35,7 +35,10 @@ tmux_session_open() {
 			--delimiter '/' \
 			--tmux 100%,100% \
 			--color='current-bg:-1' \
-			--header " Session" \
+			--footer " Session" \
+			--footer-border sharp \
+			--input-border sharp \
+			--layout 'reverse-list' \
 			--jump-labels "123456789" \
 			--bind "ctrl-o:execute-silent($_tmux_fzf_session_source_dir/tmux-fzf-cmd.sh github-open '{}')" \
 			--bind "ctrl-x:execute(tmux kill-session -t {})+reload($session_list),space:jump,jump:accept"

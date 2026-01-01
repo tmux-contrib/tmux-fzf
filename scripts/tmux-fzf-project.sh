@@ -41,7 +41,10 @@ tmux_project_open() {
 			--delimiter '/' \
 			--with-nth="$project_list_depth.." \
 			--tmux 100%,100% \
-			--header "  Projects" \
+			--footer "  Projects" \
+			--footer-border sharp \
+			--input-border sharp \
+			--layout 'reverse-list' \
 			--bind "ctrl-o:execute-silent($_tmux_fzf_project_source_dir/tmux-fzf-cmd.sh github-open '{}')" \
 			--bind "ctrl-t:execute($_tmux_fzf_project_source_dir/tmux-fzf-cmd.sh upterm-open '{}')+abort"
 	)
