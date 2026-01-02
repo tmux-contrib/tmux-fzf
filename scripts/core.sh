@@ -1,5 +1,15 @@
 #!/usr/bin/env bash
 
+_fzf_options=(
+	--border='none'
+	--delimiter='/'
+	--tmux='100%,100%'
+	--color='footer:red'
+	--footer-border='sharp'
+	--input-border='sharp'
+	--layout='reverse-list'
+)
+
 # Check if required dependencies are installed.
 #
 # Verifies that fzf and fd are installed and available in the system PATH.

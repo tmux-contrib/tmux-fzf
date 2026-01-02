@@ -36,15 +36,9 @@ tmux_project_open() {
 	project_list_depth=$("$_tmux_fzf_project_source_dir/tmux-fzf-cmd.sh" project-list-depth)
 	# List project directories and use fzf to select one.
 	project_path=$(
-		$project_list | fzf --ansi \
-			--border none \
-			--delimiter '/' \
-			--with-nth="$project_list_depth.." \
-			--tmux 100%,100% \
+		$project_list | fzf --ansi "${_fzf_options[@]}" \
 			--footer "  Projects" \
-			--footer-border sharp \
-			--input-border sharp \
-			--layout 'reverse-list' \
+			--with-nth="$project_list_depth.." \
 			--bind "ctrl-o:execute-silent($_tmux_fzf_project_source_dir/tmux-fzf-cmd.sh github-open '{}')" \
 			--bind "ctrl-t:execute($_tmux_fzf_project_source_dir/tmux-fzf-cmd.sh upterm-open '{}')+abort"
 	)
