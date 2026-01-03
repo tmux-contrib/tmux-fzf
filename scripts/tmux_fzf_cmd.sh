@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+[ -z "$DEBUG" ] || set -x
+
 # Command helper script for tmux-fzf.
 #
 # Usage:

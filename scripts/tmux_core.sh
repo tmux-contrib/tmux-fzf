@@ -2,9 +2,9 @@
 
 _fzf_options=(
 	--ansi
-	--border='none'
+	--tmux
+	--border='sharp'
 	--delimiter='/'
-	--tmux='100%,100%'
 	--color='footer:red'
 	--footer-border='sharp'
 	--input-border='sharp'
