@@ -4,7 +4,7 @@ _tmux_fzf_session_source_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # shellcheck source=tmux_fzf_core.sh
 source "$_tmux_fzf_session_source_dir/tmux_fzf_core.sh"
 
-check_dependencies
+_check_dependencies
 
 # Open an existing tmux session using fzf selection.
 #
@@ -39,7 +39,7 @@ tmux_session_open() {
 
 	# If a session is selected, switch to it.
 	if [[ -n $session_name ]]; then
-		tmux_switch_to "$session_name"
+		_tmux_switch_to "$session_name"
 	fi
 }
 

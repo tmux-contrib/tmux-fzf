@@ -14,16 +14,16 @@ _fzf_cmd_source_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "$_fzf_cmd_source_dir/tmux_fzf_core.sh"
 
 # List project directories using fd (full paths).
-project_list() {
+_project_list() {
 	local dir_path
-	dir_path="$(tmux_get_option "@fzf-projects-path" "$HOME/Projects")"
+	dir_path="$(_tmux_get_option "@fzf-projects-path" "$HOME/Projects")"
 	fd -t d --max-depth 3 --min-depth 3 . "$dir_path" | sed 's|/$||'
 }
 
 # Return fzf field index to start display from (for --with-nth).
-project_list_depth() {
+_project_list_depth() {
 	local dir_path
-	dir_path="$(tmux_get_option "@fzf-projects-path" "$HOME/Projects")"
+	dir_path="$(_tmux_get_option "@fzf-projects-path" "$HOME/Projects")"
 	echo $(($(echo "$dir_path" | tr -cd '/' | wc -c) + 2))
 }
 
@@ -34,7 +34,7 @@ project_list_depth() {
 #
 # Outputs:
 #   Session names to stdout (with ANSI colors if gum is available)
-session_list() {
+_session_list() {
 	if command -v gum >/dev/null 2>&1; then
 		while read -r name flag; do
 			if [ "$flag" = "1" ] || [ "$flag" = "true" ]; then
@@ -44,7 +44,7 @@ session_list() {
 			fi
 		done < <(tmux list-sessions -F '#{session_name} #{@is_upterm_session}')
 	else
-		tmux_list_sessions
+		_tmux_list_sessions
 	fi
 }
 
@@ -55,7 +55,7 @@ session_list() {
 #
 # If $1 is a directory, opens it directly.
 # If $1 is not a directory, treats it as a session name and looks up @fzf-session-cwd.
-github_open() {
+_github_open() {
 	local target="$1"
 	local dir
 
@@ -63,7 +63,7 @@ github_open() {
 		dir="$target"
 	else
 		# Treat as session name, look up stored working directory
-		dir="$(tmux_get_option_for_session "$target" "@fzf-session-cwd")"
+		dir="$(_tmux_get_option_for_session "$target" "@fzf-session-cwd")"
 		if [[ -z "$dir" ]]; then
 			tmux display-message "No project path stored for session: $target"
 			return 1
@@ -82,26 +82,26 @@ github_open() {
 #
 # Arguments:
 #   $1 - Full path to the project
-upterm_open() {
+_upterm_open() {
 	local upterm="$TMUX_PLUGIN_MANAGER_PATH/tmux-upterm/scripts/tmux-upterm.sh"
 	[[ -f "$upterm" ]] && "$upterm" "$1"
 }
 
 case "${1:-}" in
 project-list)
-	project_list
+	_project_list
 	;;
 project-list-depth)
-	project_list_depth
+	_project_list_depth
 	;;
 session-list)
-	session_list
+	_session_list
 	;;
 github-open)
-	github_open "$2"
+	_github_open "$2"
 	;;
 upterm-open)
-	upterm_open "$2"
+	_upterm_open "$2"
 	;;
 *)
 	echo "Usage: tmux_fzf_cmd.sh {project-list|session-list|github-open|upterm-open} [args...]" >&2

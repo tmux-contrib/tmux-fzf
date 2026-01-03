@@ -23,7 +23,7 @@ _fzf_options=(
 # Returns:
 #   0 if all dependencies are installed
 #   1 if any dependency is missing
-check_dependencies() {
+_check_dependencies() {
 	if ! command -v fzf &>/dev/null; then
 		tmux display-message "Error: fzf is not installed. Please install it to use this plugin."
 		exit 1
@@ -44,7 +44,7 @@ check_dependencies() {
 #   $1 - The name of the tmux session to switch to
 # Returns:
 #   0 on success, non-zero on failure
-tmux_switch_to() {
+_tmux_switch_to() {
 	tmux switch-client -t "$1"
 }
 
@@ -59,7 +59,7 @@ tmux_switch_to() {
 # Returns:
 #   0 if the session exists
 #   1 if the session does not exist
-tmux_has_session() {
+_tmux_has_session() {
 	tmux list-sessions 2>/dev/null | grep -q "^$1:"
 }
 
@@ -75,7 +75,7 @@ tmux_has_session() {
 #   Session names to stdout, one per line
 # Returns:
 #   0 on success
-tmux_list_sessions() {
+_tmux_list_sessions() {
 	tmux list-sessions -F '#{session_name}'
 }
 
@@ -91,9 +91,9 @@ tmux_list_sessions() {
 #   $2 - The working directory path for the session
 # Returns:
 #   0 on success, non-zero on failure
-tmux_new_session() {
+_tmux_new_session() {
 	tmux new-session -ds "$1" -c "$2"
-	tmux_set_option_for_session "$1" "@fzf-session-cwd" "$2"
+	_tmux_set_option_for_session "$1" "@fzf-session-cwd" "$2"
 }
 
 # Derive a session name from a directory path.
@@ -110,7 +110,7 @@ tmux_new_session() {
 #   0 on success
 # Outputs:
 #   The generated session name in the format "workspace/project"
-tmux_session_name() {
+_tmux_session_name() {
 	local project workspace
 
 	project=$(basename "$1")
@@ -133,7 +133,7 @@ tmux_session_name() {
 #   The option value or default value to stdout
 # Returns:
 #   0 on success
-tmux_get_option() {
+_tmux_get_option() {
 	local option="$1"
 	local default_value="$2"
 	local option_value
@@ -154,7 +154,7 @@ tmux_get_option() {
 #   $3 - The value to set
 # Returns:
 #   0 on success, non-zero on failure
-tmux_set_option_for_session() {
+_tmux_set_option_for_session() {
 	local session="$1"
 	local option="$2"
 	local value="$3"
@@ -174,7 +174,7 @@ tmux_set_option_for_session() {
 #   The option value to stdout (empty if not set)
 # Returns:
 #   0 on success
-tmux_get_option_for_session() {
+_tmux_get_option_for_session() {
 	local session="$1"
 	local option="$2"
 	tmux show-options -t "$session" -qv "$option"

@@ -4,7 +4,7 @@ _tmux_fzf_project_source_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # shellcheck source=tmux_fzf_core.sh
 source "$_tmux_fzf_project_source_dir/tmux_fzf_core.sh"
 
-check_dependencies
+_check_dependencies
 
 # This script is adapted from ThePrimeagen's tmux-sessionizer:
 # https://github.com/ThePrimeagen/tmux-sessionizer
@@ -48,13 +48,13 @@ tmux_project_open() {
 		return 0
 	fi
 
-	project_name=$(tmux_session_name "$project_path")
+	project_name=$(_tmux_session_name "$project_path")
 	# Create a new tmux session for the project if it doesn't exist.
-	if ! tmux_has_session "$project_name"; then
-		tmux_new_session "$project_name" "$project_path"
+	if ! _tmux_has_session "$project_name"; then
+		_tmux_new_session "$project_name" "$project_path"
 	fi
 
-	tmux_switch_to "$project_name"
+	_tmux_switch_to "$project_name"
 }
 
 tmux_project_open "$@"
