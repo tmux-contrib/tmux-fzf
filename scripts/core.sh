@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 _fzf_options=(
+	--ansi
 	--border='none'
 	--delimiter='/'
 	--tmux='100%,100%'

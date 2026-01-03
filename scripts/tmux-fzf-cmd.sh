@@ -24,7 +24,7 @@ project_list() {
 project_list_depth() {
 	local dir_path
 	dir_path="$(tmux_get_option "@fzf-projects-path" "$HOME/Projects")"
-	echo $(( $(echo "$dir_path" | tr -cd '/' | wc -c) + 2 ))
+	echo $(($(echo "$dir_path" | tr -cd '/' | wc -c) + 2))
 }
 
 # List tmux sessions with styling for fzf display.

@@ -30,7 +30,7 @@ tmux_session_open() {
 
 	# List sessions, extract their names, and use fzf to select one.
 	session_name=$(
-		$session_list | fzf --ansi "${_fzf_options[@]}" \
+		$session_list | fzf "${_fzf_options[@]}" \
 			--footer " Session" \
 			--jump-labels "123456789" \
 			--bind "ctrl-o:execute-silent($_tmux_fzf_session_source_dir/tmux-fzf-cmd.sh github-open '{}')" \
