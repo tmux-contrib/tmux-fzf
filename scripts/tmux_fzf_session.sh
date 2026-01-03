@@ -4,8 +4,6 @@ _tmux_source_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # shellcheck source=tmux_core.sh
 source "$_tmux_source_dir/tmux_core.sh"
 
-_check_dependencies
-
 # Open an existing tmux session using fzf selection.
 #
 # Presents an fzf menu of all running tmux sessions and switches to the selected one.

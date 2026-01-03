@@ -6,6 +6,8 @@ _tmux_root_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # shellcheck source=scripts/tmux_core.sh
 source "$_tmux_root_dir/scripts/tmux_core.sh"
 
+_check_dependencies
+
 # Get user-defined key
 fzf_projects_key=$(_tmux_get_option "@fzf-projects-key")
 # OR use default key bind

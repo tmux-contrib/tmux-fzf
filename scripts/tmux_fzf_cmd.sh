@@ -83,7 +83,7 @@ _github_open() {
 # Arguments:
 #   $1 - Full path to the project
 _upterm_open() {
-	local upterm="$TMUX_PLUGIN_MANAGER_PATH/tmux-upterm/scripts/tmux-upterm.sh"
+	local upterm="$TMUX_PLUGIN_MANAGER_PATH/tmux-upterm/scripts/tmux_upterm.sh"
 	[[ -f "$upterm" ]] && "$upterm" "$1"
 }
 
