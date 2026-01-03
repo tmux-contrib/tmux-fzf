@@ -10,7 +10,7 @@
 #   tmux_fzf_cmd.sh upterm-open <path>        - Open project in upterm
 
 _fzf_cmd_source_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-# shellcheck source=scripts/tmux_fzf_core.sh
+# shellcheck source=tmux_fzf_core.sh
 source "$_fzf_cmd_source_dir/tmux_fzf_core.sh"
 
 # List project directories using fd (full paths).
