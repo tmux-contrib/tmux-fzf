@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
 _tmux_fzf_session_source_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-# shellcheck source=core.sh
-source "$_tmux_fzf_session_source_dir/core.sh"
+# shellcheck source=tmux_fzf_core.sh
+source "$_tmux_fzf_session_source_dir/tmux_fzf_core.sh"
 
 check_dependencies
 
@@ -26,14 +26,14 @@ check_dependencies
 #   - tmux ls: to list available sessions
 tmux_session_open() {
 	local session_name
-	local session_list="$_tmux_fzf_session_source_dir/tmux-fzf-cmd.sh session-list"
+	local session_list="$_tmux_fzf_session_source_dir/tmux_fzf_cmd.sh session-list"
 
 	# List sessions, extract their names, and use fzf to select one.
 	session_name=$(
 		$session_list | fzf "${_fzf_options[@]}" \
 			--footer " Session" \
 			--jump-labels "123456789" \
-			--bind "ctrl-o:execute-silent($_tmux_fzf_session_source_dir/tmux-fzf-cmd.sh github-open '{}')" \
+			--bind "ctrl-o:execute-silent($_tmux_fzf_session_source_dir/tmux_fzf_cmd.sh github-open '{}')" \
 			--bind "ctrl-x:execute(tmux kill-session -t {})+reload($session_list),space:jump,jump:accept"
 	)
 

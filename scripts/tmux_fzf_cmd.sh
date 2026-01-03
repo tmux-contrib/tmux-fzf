@@ -3,15 +3,15 @@
 # Command helper script for tmux-fzf.
 #
 # Usage:
-#   tmux-fzf-cmd.sh project-list              - List project directories (full paths)
-#   tmux-fzf-cmd.sh project-list-depth        - Return fzf field index for --with-nth
-#   tmux-fzf-cmd.sh session-list              - List sessions with styling
-#   tmux-fzf-cmd.sh github-open <path|ses>    - Open repository in browser (path or session name)
-#   tmux-fzf-cmd.sh upterm-open <path>        - Open project in upterm
+#   tmux_fzf_cmd.sh project-list              - List project directories (full paths)
+#   tmux_fzf_cmd.sh project-list-depth        - Return fzf field index for --with-nth
+#   tmux_fzf_cmd.sh session-list              - List sessions with styling
+#   tmux_fzf_cmd.sh github-open <path|ses>    - Open repository in browser (path or session name)
+#   tmux_fzf_cmd.sh upterm-open <path>        - Open project in upterm
 
 _fzf_cmd_source_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-# shellcheck source=scripts/core.sh
-source "$_fzf_cmd_source_dir/core.sh"
+# shellcheck source=scripts/tmux_fzf_core.sh
+source "$_fzf_cmd_source_dir/tmux_fzf_core.sh"
 
 # List project directories using fd (full paths).
 project_list() {
@@ -104,7 +104,7 @@ upterm-open)
 	upterm_open "$2"
 	;;
 *)
-	echo "Usage: tmux-fzf-cmd.sh {project-list|session-list|github-open|upterm-open} [args...]" >&2
+	echo "Usage: tmux_fzf_cmd.sh {project-list|session-list|github-open|upterm-open} [args...]" >&2
 	exit 1
 	;;
 esac
