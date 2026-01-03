@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
-_tmux_fzf_project_source_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-# shellcheck source=tmux_fzf_core.sh
-source "$_tmux_fzf_project_source_dir/tmux_fzf_core.sh"
+_tmux_source_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# shellcheck source=tmux_core.sh
+source "$_tmux_source_dir/tmux_core.sh"
 
 _check_dependencies
 
@@ -30,17 +30,17 @@ _check_dependencies
 tmux_project_open() {
 	local project_name
 	local project_path
-	local project_list="$_tmux_fzf_project_source_dir/tmux_fzf_cmd.sh project-list"
+	local project_list="$_tmux_source_dir/tmux_fzf_cmd.sh project-list"
 	local project_list_depth
 
-	project_list_depth=$("$_tmux_fzf_project_source_dir/tmux_fzf_cmd.sh" project-list-depth)
+	project_list_depth=$("$_tmux_source_dir/tmux_fzf_cmd.sh" project-list-depth)
 	# List project directories and use fzf to select one.
 	project_path=$(
 		$project_list | fzf "${_fzf_options[@]}" \
 			--footer "  Projects" \
 			--with-nth="$project_list_depth.." \
-			--bind "ctrl-o:execute-silent($_tmux_fzf_project_source_dir/tmux_fzf_cmd.sh github-open '{}')" \
-			--bind "ctrl-t:execute($_tmux_fzf_project_source_dir/tmux_fzf_cmd.sh upterm-open '{}')+abort"
+			--bind "ctrl-o:execute-silent($_tmux_source_dir/tmux_fzf_cmd.sh github-open '{}')" \
+			--bind "ctrl-t:execute($_tmux_source_dir/tmux_fzf_cmd.sh upterm-open '{}')+abort"
 	)
 
 	# Exit silently if no directory was selected.

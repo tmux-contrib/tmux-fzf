@@ -9,9 +9,9 @@
 #   tmux_fzf_cmd.sh github-open <path|ses>    - Open repository in browser (path or session name)
 #   tmux_fzf_cmd.sh upterm-open <path>        - Open project in upterm
 
-_fzf_cmd_source_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-# shellcheck source=tmux_fzf_core.sh
-source "$_fzf_cmd_source_dir/tmux_fzf_core.sh"
+_tmux_source_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# shellcheck source=tmux_core.sh
+source "$_tmux_source_dir/tmux_core.sh"
 
 # List project directories using fd (full paths).
 _project_list() {
