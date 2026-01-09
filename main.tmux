@@ -8,20 +8,26 @@ source "$_tmux_root_dir/scripts/tmux_core.sh"
 
 _check_dependencies
 
-# Get user-defined key
+# Get user-defined prefix key (default: f)
+fzf_prefix_key=$(_tmux_get_option "@fzf-prefix-key")
+if [ -z "$fzf_prefix_key" ]; then
+	fzf_prefix_key="f"
+fi
+
+# Bind the prefix key to enter the fzf menu
+tmux bind "$fzf_prefix_key" switch-client -T fzf-menu
+
+# Get user-defined keys for projects and sessions
 fzf_projects_key=$(_tmux_get_option "@fzf-projects-key")
-# OR use default key bind
 if [ -z "$fzf_projects_key" ]; then
-  fzf_projects_key="M-p"
+	fzf_projects_key="p"
 fi
 
-tmux bind -n "$fzf_projects_key" run-shell "$_tmux_root_dir/scripts/tmux_fzf_project.sh"
-
-# Get user-defined key
 fzf_sessions_key=$(_tmux_get_option "@fzf-sessions-key")
-# OR use default key bind
 if [ -z "$fzf_sessions_key" ]; then
-  fzf_sessions_key="M-s"
+	fzf_sessions_key="s"
 fi
 
-tmux bind -n "$fzf_sessions_key" run-shell "$_tmux_root_dir/scripts/tmux_fzf_session.sh"
+# Bind keys within the fzf-menu table
+tmux bind -T fzf-menu "$fzf_projects_key" run-shell "$_tmux_root_dir/scripts/tmux_fzf_project.sh"
+tmux bind -T fzf-menu "$fzf_sessions_key" run-shell "$_tmux_root_dir/scripts/tmux_fzf_session.sh"

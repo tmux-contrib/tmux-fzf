@@ -14,10 +14,10 @@ set -g @plugin 'tmux-contrib/tmux-fzf'
 
 ## Usage
 
-| Key Binding                        | Description                   |
-| ---------------------------------- | ----------------------------- |
-| <kbd>Alt</kbd> + <kbd>p</kbd>      | Search and switch to projects |
-| <kbd>Alt</kbd> + <kbd>s</kbd>      | Search and switch to sessions |
+| Key Binding                                     | Description                   |
+| ----------------------------------------------- | ----------------------------- |
+| <kbd>Prefix</kbd> + <kbd>f</kbd> + <kbd>p</kbd> | Search and switch to projects |
+| <kbd>Prefix</kbd> + <kbd>f</kbd> + <kbd>s</kbd> | Search and switch to sessions |
 
 ### Project Picker
 
@@ -38,9 +38,27 @@ Add these options to your `~/.tmux.conf`:
 # Set the projects directory (default: ~/Projects)
 set -g @fzf-projects-path "~/Projects"
 
-# Change the Projects key bindings (default: M-p)
-set -g @fzf-projects-key 'M-t'
+# Change the fzf menu prefix key (default: f)
+# Usage: Prefix + <your-key> + p/s
+set -g @fzf-prefix-key 'g'
 
-# Change the Sessions key bindings (default: M-s)
-set -g @fzf-sessions-key 'M-j'
+# Change the projects key (default: p)
+# Usage: Prefix + f + <your-key>
+set -g @fzf-projects-key 'j'
+
+# Change the sessions key (default: s)
+# Usage: Prefix + f + <your-key>
+set -g @fzf-sessions-key 'k'
 ```
+
+### Key Binding Design
+
+This plugin uses a **two-key sequence** approach:
+1. Press <kbd>Prefix</kbd> + <kbd>f</kbd> to enter the fzf menu
+2. Press <kbd>p</kbd> for projects or <kbd>s</kbd> for sessions
+
+**Benefits:**
+- No conflicts with default tmux bindings
+- Logical grouping of all fzf commands under the "f" namespace
+- Easy to expand with more commands in the future
+- Works reliably in all terminal emulators
