@@ -26,10 +26,13 @@ tmux_session_open() {
 	local session_name
 	local session_list="$_tmux_source_dir/tmux_fzf_cmd.sh session-list"
 
+	local client_tty
+	client_tty=$(_tmux_get_client_tty)
+
 	# List sessions, extract their names, and use fzf to select one.
 	session_name=$(
 		$session_list | fzf "${_fzf_options[@]}" \
-			--footer " Session" \
+			--footer "  Sessions · $client_tty" \
 			--jump-labels "123456789" \
 			--bind "ctrl-o:execute-silent($_tmux_source_dir/tmux_fzf_cmd.sh github-open '{}')" \
 			--bind "ctrl-x:execute(tmux kill-session -t {})+reload($session_list),space:jump,jump:accept"

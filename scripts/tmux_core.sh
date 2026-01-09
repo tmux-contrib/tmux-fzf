@@ -179,3 +179,7 @@ _tmux_get_option_for_session() {
 	local option="$2"
 	tmux show-options -t "$session" -qv "$option"
 }
+
+_tmux_get_client_tty() {
+	tmux display-message -p '#{client_tty}'
+}

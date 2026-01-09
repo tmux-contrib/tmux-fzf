@@ -15,17 +15,22 @@ _tmux_source_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # shellcheck source=tmux_core.sh
 source "$_tmux_source_dir/tmux_core.sh"
 
+# Return the configured projects directory.
+_project_dir() {
+	_tmux_get_option "@fzf-projects-path" "$HOME/Projects"
+}
+
 # List project directories using fd (full paths).
 _project_list() {
 	local dir_path
-	dir_path="$(_tmux_get_option "@fzf-projects-path" "$HOME/Projects")"
+	dir_path="$(_project_dir)"
 	fd -t d --max-depth 3 --min-depth 3 . "$dir_path" | sed 's|/$||'
 }
 
 # Return fzf field index to start display from (for --with-nth).
 _project_list_depth() {
 	local dir_path
-	dir_path="$(_tmux_get_option "@fzf-projects-path" "$HOME/Projects")"
+	dir_path="$(_project_dir)"
 	echo $(($(echo "$dir_path" | tr -cd '/' | wc -c) + 2))
 }
 
@@ -90,6 +95,9 @@ _upterm_open() {
 }
 
 case "${1:-}" in
+project-dir)
+	_project_dir
+	;;
 project-list)
 	_project_list
 	;;
