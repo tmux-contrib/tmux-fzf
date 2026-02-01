@@ -17,7 +17,7 @@ source "$_tmux_source_dir/tmux_core.sh"
 
 # Return the configured projects directory.
 _project_dir() {
-	_tmux_get_option "@fzf-projects-path" "$HOME/Projects"
+	_tmux_get_option "@fzf-projects-path" "$HOME/projects"
 }
 
 # List project directories using fd (full paths).
