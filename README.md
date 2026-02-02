@@ -35,8 +35,8 @@ set -g @plugin 'tmux-contrib/tmux-fzf'
 Add these options to your `~/.tmux.conf`:
 
 ```tmux
-# Set the projects directory (default: ~/projects)
-set -g @fzf-projects-path "~/projects"
+# Set the projects directory (default: ~/Projects)
+set -g @fzf-projects-path "~/Projects"
 
 # Change the fzf menu prefix key (default: f)
 # Usage: Prefix + <your-key> + p/s
@@ -54,12 +54,10 @@ set -g @fzf-sessions-key 'k'
 ### Key Binding Design
 
 This plugin uses a **two-key sequence** approach:
-
 1. Press <kbd>Prefix</kbd> + <kbd>f</kbd> to enter the fzf menu
 2. Press <kbd>p</kbd> for projects or <kbd>s</kbd> for sessions
 
 **Benefits:**
-
 - No conflicts with default tmux bindings
 - Logical grouping of all fzf commands under the "f" namespace
 - Easy to expand with more commands in the future
