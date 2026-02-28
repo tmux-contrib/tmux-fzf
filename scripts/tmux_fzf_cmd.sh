@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
+set -euo pipefail
 
-[ -z "$DEBUG" ] || set -x
+[[ -z "${DEBUG:-}" ]] || set -x
 
 # Command helper script for tmux-fzf.
 #
@@ -10,8 +11,15 @@
 #   tmux_fzf_cmd.sh session-list              - List sessions with styling
 #   tmux_fzf_cmd.sh github-open <path|ses>    - Open repository in browser (path or session name)
 #   tmux_fzf_cmd.sh upterm-open <path>        - Open project in upterm
+#   tmux_fzf_cmd.sh --version                 - Print version
 
 _tmux_source_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+[[ -f "$_tmux_source_dir/tmux_core.sh" ]] || {
+	echo "tmux-fzf: missing tmux_core.sh" >&2
+	exit 1
+}
+
 # shellcheck source=tmux_core.sh
 source "$_tmux_source_dir/tmux_core.sh"
 
@@ -44,7 +52,7 @@ _project_list_depth() {
 _session_list() {
 	if command -v gum >/dev/null 2>&1; then
 		while read -r name flag; do
-			if [ "$flag" = "1" ] || [ "$flag" = "true" ]; then
+			if [[ "$flag" = "1" ]] || [[ "$flag" = "true" ]]; then
 				CLICOLOR_FORCE=1 gum style --foreground 9 "$name"
 			else
 				echo "$name"
@@ -70,7 +78,7 @@ _github_open() {
 		dir="$target"
 	else
 		# Treat as session name, look up stored working directory
-		dir="$(_tmux_get_option_for_session "$target" "@fzf-session-cwd")"
+		dir="$(_tmux_get_session_option "$target" "@fzf-session-cwd")"
 		if [[ -z "$dir" ]]; then
 			tmux display-message "No project path stored for session: $target"
 			return 1
@@ -91,30 +99,42 @@ _github_open() {
 #   $1 - Full path to the project
 _upterm_open() {
 	local upterm="$TMUX_PLUGIN_MANAGER_PATH/tmux-upterm/scripts/tmux_upterm.sh"
-	[[ -f "$upterm" ]] && "$upterm" "$1"
+	if [[ -f "$upterm" ]]; then
+		"$upterm" "$1"
+	fi
 }
 
-case "${1:-}" in
-project-dir)
-	_project_dir
-	;;
-project-list)
-	_project_list
-	;;
-project-list-depth)
-	_project_list_depth
-	;;
-session-list)
-	_session_list
-	;;
-github-open)
-	_github_open "$2"
-	;;
-upterm-open)
-	_upterm_open "$2"
-	;;
-*)
-	echo "Usage: tmux_fzf_cmd.sh {project-list|session-list|github-open|upterm-open} [args...]" >&2
-	exit 1
-	;;
-esac
+main() {
+	local command="${1:-}"
+	shift || true
+
+	case "$command" in
+	--version)
+		cat "$_tmux_source_dir/../version.txt"
+		;;
+	project-dir)
+		_project_dir
+		;;
+	project-list)
+		_project_list
+		;;
+	project-list-depth)
+		_project_list_depth
+		;;
+	session-list)
+		_session_list
+		;;
+	github-open)
+		_github_open "$1"
+		;;
+	upterm-open)
+		_upterm_open "$1"
+		;;
+	*)
+		echo "Usage: tmux_fzf_cmd.sh {--version|project-list|session-list|github-open|upterm-open} [args...]" >&2
+		exit 1
+		;;
+	esac
+}
+
+main "$@"

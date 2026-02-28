@@ -1,6 +1,15 @@
 #!/usr/bin/env bash
+set -euo pipefail
+
+[[ -z "${DEBUG:-}" ]] || set -x
 
 _tmux_source_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+[[ -f "$_tmux_source_dir/tmux_core.sh" ]] || {
+	echo "tmux-fzf: missing tmux_core.sh" >&2
+	exit 1
+}
+
 # shellcheck source=tmux_core.sh
 source "$_tmux_source_dir/tmux_core.sh"
 
@@ -36,7 +45,7 @@ tmux_session_open() {
 			--jump-labels "123456789" \
 			--bind "ctrl-o:execute-silent($_tmux_source_dir/tmux_fzf_cmd.sh github-open '{}')" \
 			--bind "ctrl-x:execute(tmux kill-session -t {})+reload($session_list),space:jump,jump:accept"
-	)
+	) || true
 
 	# If a session is selected, switch to it.
 	if [[ -n $session_name ]]; then

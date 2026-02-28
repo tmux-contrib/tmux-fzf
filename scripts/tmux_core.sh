@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# tmux_core.sh — shared library; meant to be sourced, not executed directly.
 
 _fzf_options=(
 	--ansi
@@ -60,7 +61,7 @@ _tmux_switch_to() {
 #   0 if the session exists
 #   1 if the session does not exist
 _tmux_has_session() {
-	tmux list-sessions 2>/dev/null | grep -q "^$1:"
+	tmux has-session -t "$1" 2>/dev/null
 }
 
 # List all tmux sessions.
@@ -93,7 +94,7 @@ _tmux_list_sessions() {
 #   0 on success, non-zero on failure
 _tmux_new_session() {
 	tmux new-session -ds "$1" -c "$2"
-	_tmux_set_option_for_session "$1" "@fzf-session-cwd" "$2"
+	_tmux_set_session_option "$1" "@fzf-session-cwd" "$2"
 }
 
 # Derive a session name from a directory path.
@@ -128,18 +129,18 @@ _tmux_session_name() {
 #   None
 # Arguments:
 #   $1 - The name of the tmux option to retrieve
-#   $2 - The default value to return if the option is not set
+#   $2 - (optional) The default value to return if the option is not set
 # Outputs:
 #   The option value or default value to stdout
 # Returns:
 #   0 on success
 _tmux_get_option() {
 	local option="$1"
-	local default_value="$2"
-	local option_value
+	local default="${2:-}"
+	local value
 
-	option_value="$(tmux show-option -gqv "$option")"
-	[[ -n "$option_value" ]] && echo "$option_value" || echo "$default_value"
+	value="$(tmux show-option -gqv "$option" 2>/dev/null)"
+	echo "${value:-$default}"
 }
 
 # Set a tmux session option.
@@ -154,7 +155,7 @@ _tmux_get_option() {
 #   $3 - The value to set
 # Returns:
 #   0 on success, non-zero on failure
-_tmux_set_option_for_session() {
+_tmux_set_session_option() {
 	local session="$1"
 	local option="$2"
 	local value="$3"
@@ -170,16 +171,33 @@ _tmux_set_option_for_session() {
 # Arguments:
 #   $1 - The name of the tmux session
 #   $2 - The name of the option to retrieve
+#   $3 - (optional) The default value to return if the option is not set
 # Outputs:
-#   The option value to stdout (empty if not set)
+#   The option value or default value to stdout
 # Returns:
 #   0 on success
-_tmux_get_option_for_session() {
+_tmux_get_session_option() {
 	local session="$1"
 	local option="$2"
-	tmux show-options -t "$session" -qv "$option"
+	local default="${3:-}"
+	local value
+
+	value="$(tmux show-options -t "$session" -qv "$option" 2>/dev/null)"
+	echo "${value:-$default}"
 }
 
+# Get the TTY of the current tmux client.
+#
+# Retrieves the terminal device path for the active tmux client.
+#
+# Globals:
+#   None
+# Arguments:
+#   None
+# Outputs:
+#   The client TTY path to stdout (e.g., /dev/ttys001)
+# Returns:
+#   0 on success
 _tmux_get_client_tty() {
 	tmux display-message -p '#{client_tty}'
 }

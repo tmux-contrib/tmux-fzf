@@ -1,6 +1,15 @@
 #!/usr/bin/env bash
+set -euo pipefail
+
+[[ -z "${DEBUG:-}" ]] || set -x
 
 _tmux_source_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+[[ -f "$_tmux_source_dir/tmux_core.sh" ]] || {
+	echo "tmux-fzf: missing tmux_core.sh" >&2
+	exit 1
+}
+
 # shellcheck source=tmux_core.sh
 source "$_tmux_source_dir/tmux_core.sh"
 
@@ -49,7 +58,7 @@ tmux_project_open() {
 			--with-nth="$project_list_depth.." \
 			--bind "ctrl-o:execute-silent($_tmux_source_dir/tmux_fzf_cmd.sh github-open '{}')" \
 			--bind "ctrl-t:execute($_tmux_source_dir/tmux_fzf_cmd.sh upterm-open '{}')+abort"
-	)
+	) || true
 
 	# Exit silently if no directory was selected.
 	if [[ -z "$project_path" ]]; then
