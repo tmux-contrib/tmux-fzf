@@ -4,15 +4,6 @@ set -euo pipefail
 [[ -z "${DEBUG:-}" ]] || set -x
 
 # Command helper script for tmux-fzf.
-#
-# Usage:
-#   tmux_fzf_cmd.sh --version                 - Print plugin version
-#   tmux_fzf_cmd.sh project-dir               - Return configured projects directory
-#   tmux_fzf_cmd.sh project-list              - List project directories (full paths)
-#   tmux_fzf_cmd.sh project-list-depth        - Return fzf field index for --with-nth
-#   tmux_fzf_cmd.sh session-list              - List sessions with styling
-#   tmux_fzf_cmd.sh github-open <path|ses>    - Open repository in browser (path or session name)
-#   tmux_fzf_cmd.sh upterm-open <path>        - Open project in upterm
 
 _tmux_source_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
@@ -24,29 +15,28 @@ _tmux_source_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # shellcheck source=tmux_core.sh
 source "$_tmux_source_dir/tmux_core.sh"
 
-# Return the configured projects directory.
+# Return the configured projects directory
 _project_dir() {
 	_tmux_get_option "@fzf-projects-path" "$HOME/Projects"
 }
 
-# List project directories using fd (full paths).
+# List project directories using fd (full paths)
 _project_list() {
 	local dir_path
 	dir_path="$(_project_dir)"
 	fd -t d --max-depth 3 --min-depth 3 . "$dir_path" | sed 's|/$||'
 }
 
-# Return fzf field index to start display from (for --with-nth).
+# Return fzf field index to start display from (for --with-nth)
 _project_list_depth() {
 	local dir_path
 	dir_path="$(_project_dir)"
 	echo $(($(echo "$dir_path" | tr -cd '/' | wc -c) + 2))
 }
 
-# List tmux sessions with styling for fzf display.
+# List tmux sessions with styling for fzf display
 #
-# Lists all running tmux sessions. If gum is available,
-# highlights upterm sessions in red for visual distinction.
+# If gum is available, highlights upterm sessions in red.
 #
 # Outputs:
 #   Session names to stdout (with ANSI colors if gum is available)
@@ -64,13 +54,13 @@ _session_list() {
 	fi
 }
 
-# Open GitHub repository in browser, or Finder if not a git repo.
-#
-# Arguments:
-#   $1 - Full path to project directory, OR session name
+# Open GitHub repository in browser, or Finder if not a git repo
 #
 # If $1 is a directory, opens it directly.
 # If $1 is not a directory, treats it as a session name and looks up @fzf-session-cwd.
+#
+# Arguments:
+#   $1 - full path to project directory, OR session name
 _github_open() {
 	local target="$1"
 	local dir
@@ -94,10 +84,10 @@ _github_open() {
 	fi
 }
 
-# Open project in upterm (if available).
+# Open project in upterm (if available)
 #
 # Arguments:
-#   $1 - Full path to the project
+#   $1 - full path to the project
 _upterm_open() {
 	local upterm="$TMUX_PLUGIN_MANAGER_PATH/tmux-upterm/scripts/tmux_upterm.sh"
 	if [[ -f "$upterm" ]]; then
@@ -105,6 +95,19 @@ _upterm_open() {
 	fi
 }
 
+# Main command router
+#
+# Arguments:
+#   $1 - command name
+#   $@ - command-specific arguments
+# Commands:
+#   --version          - Print plugin version
+#   project-dir        - Return configured projects directory
+#   project-list       - List project directories (full paths)
+#   project-list-depth - Return fzf field index for --with-nth
+#   session-list       - List sessions with styling
+#   github-open        - Open repository in browser (path or session name)
+#   upterm-open        - Open project in upterm
 main() {
 	local command="${1:-}"
 	shift || true

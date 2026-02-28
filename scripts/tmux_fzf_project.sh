@@ -15,25 +15,12 @@ source "$_tmux_source_dir/tmux_core.sh"
 
 # This script is adapted from ThePrimeagen's tmux-sessionizer:
 # https://github.com/ThePrimeagen/tmux-sessionizer
-#
-# Provides functions for managing tmux sessions with fzf.
 
-# Create or switch to a tmux session for a project directory.
+# Create or switch to a tmux session for a project directory
 #
-# Presents an fzf menu to select a project directory from the configured projects
-# path. The fzf menu includes key bindings:
-#   - ctrl-o: Open GitHub repository in browser (falls back to Finder if not a repo)
+# Presents an fzf menu to select a project directory. Key bindings:
+#   - ctrl-o: Open GitHub repository in browser
 #   - ctrl-t: Open project in upterm (if available)
-#
-# Globals:
-#   None
-# Returns:
-#   0 on success or if no directory was selected
-# Dependencies:
-#   - fzf: for interactive directory selection
-#   - fd: for fast directory traversal
-#   - gh: (optional) for opening GitHub repositories with ctrl-o
-#   - tmux get-option: to read @fzf-projects-path configuration
 tmux_project_open() {
 	local project_name
 	local project_path

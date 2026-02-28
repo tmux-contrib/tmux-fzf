@@ -52,6 +52,50 @@ Sessions are named from the project directory path using the `workspace/project`
 - `/home/user/Projects/github.com/org/repo` → `org/repo`
 - Dots in names are replaced with underscores for tmux compatibility
 
+### Key Binding Design
+
+This plugin uses a **two-key sequence** approach:
+1. Press <kbd>Prefix</kbd> + <kbd>f</kbd> to enter the fzf menu
+2. Press <kbd>p</kbd> for projects or <kbd>s</kbd> for sessions
+
+**Benefits:**
+- No conflicts with default tmux bindings
+- Logical grouping of all fzf commands under the "f" namespace
+- Easy to expand with more commands in the future
+- Works reliably in all terminal emulators
+
+## Commands
+
+You can call the `scripts/tmux_fzf_cmd.sh` script directly:
+
+```sh
+# Print plugin version
+/path/to/tmux-fzf/scripts/tmux_fzf_cmd.sh --version
+
+# Return configured projects directory
+/path/to/tmux-fzf/scripts/tmux_fzf_cmd.sh project-dir
+
+# List project directories (full paths)
+/path/to/tmux-fzf/scripts/tmux_fzf_cmd.sh project-list
+
+# List sessions with styling
+/path/to/tmux-fzf/scripts/tmux_fzf_cmd.sh session-list
+
+# Open GitHub repository in browser (accepts path or session name)
+/path/to/tmux-fzf/scripts/tmux_fzf_cmd.sh github-open <path|session>
+
+# Open project in upterm
+/path/to/tmux-fzf/scripts/tmux_fzf_cmd.sh upterm-open <path>
+```
+
+### Debugging
+
+Enable trace output with the `DEBUG` environment variable:
+
+```sh
+DEBUG=1 /path/to/tmux-fzf/scripts/tmux_fzf_cmd.sh --version
+```
+
 ## Configuration
 
 Add these options to your `~/.tmux.conf`:
@@ -71,50 +115,6 @@ set -g @fzf-projects-key 'j'
 # Change the sessions key (default: s)
 # Usage: Prefix + f + <your-key>
 set -g @fzf-sessions-key 'k'
-```
-
-### Key Binding Design
-
-This plugin uses a **two-key sequence** approach:
-1. Press <kbd>Prefix</kbd> + <kbd>f</kbd> to enter the fzf menu
-2. Press <kbd>p</kbd> for projects or <kbd>s</kbd> for sessions
-
-**Benefits:**
-- No conflicts with default tmux bindings
-- Logical grouping of all fzf commands under the "f" namespace
-- Easy to expand with more commands in the future
-- Works reliably in all terminal emulators
-
-## Commands
-
-The `scripts/tmux_fzf_cmd.sh` script provides sub-commands used internally by the plugin. These can also be called directly:
-
-```sh
-# Print plugin version
-scripts/tmux_fzf_cmd.sh --version
-
-# List project directories (full paths)
-scripts/tmux_fzf_cmd.sh project-list
-
-# Return configured projects directory
-scripts/tmux_fzf_cmd.sh project-dir
-
-# List sessions with styling
-scripts/tmux_fzf_cmd.sh session-list
-
-# Open GitHub repository in browser (accepts path or session name)
-scripts/tmux_fzf_cmd.sh github-open <path|session>
-
-# Open project in upterm
-scripts/tmux_fzf_cmd.sh upterm-open <path>
-```
-
-### Debugging
-
-Enable trace output with the `DEBUG` environment variable:
-
-```sh
-DEBUG=1 scripts/tmux_fzf_cmd.sh --version
 ```
 
 ## Development

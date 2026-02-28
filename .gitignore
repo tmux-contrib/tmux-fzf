@@ -10,6 +10,9 @@ result-*
 .vscode/
 .idea/
 
+# CI
+.tmux-aws/
+
 # OS
 .DS_Store
 Thumbs.db

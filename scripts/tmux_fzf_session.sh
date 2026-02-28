@@ -13,24 +13,13 @@ _tmux_source_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # shellcheck source=tmux_core.sh
 source "$_tmux_source_dir/tmux_core.sh"
 
-# Open an existing tmux session using fzf selection.
+# Open an existing tmux session using fzf selection
 #
-# Presents an fzf menu of all running tmux sessions and switches to the selected one.
-# The fzf menu includes interactive key bindings:
+# Presents an fzf menu of all running sessions. Key bindings:
 #   - ctrl-o: Open the session's GitHub repository in browser
 #   - ctrl-x: Kill the highlighted session and reload the list
-#   - space: Jump mode for quick navigation
-#   - jump: Accept selection after jump
-#
-# Globals:
-#   None
-# Arguments:
-#   None
-# Returns:
-#   0 on success or if no session was selected
-# Dependencies:
-#   - fzf: for interactive session selection
-#   - tmux ls: to list available sessions
+#   - space:  Jump mode for quick navigation
+#   - jump:   Accept selection after jump
 tmux_session_open() {
 	local session_name
 	local session_list="$_tmux_source_dir/tmux_fzf_cmd.sh session-list"
