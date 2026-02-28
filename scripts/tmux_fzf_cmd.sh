@@ -6,12 +6,13 @@ set -euo pipefail
 # Command helper script for tmux-fzf.
 #
 # Usage:
+#   tmux_fzf_cmd.sh --version                 - Print plugin version
+#   tmux_fzf_cmd.sh project-dir               - Return configured projects directory
 #   tmux_fzf_cmd.sh project-list              - List project directories (full paths)
 #   tmux_fzf_cmd.sh project-list-depth        - Return fzf field index for --with-nth
 #   tmux_fzf_cmd.sh session-list              - List sessions with styling
 #   tmux_fzf_cmd.sh github-open <path|ses>    - Open repository in browser (path or session name)
 #   tmux_fzf_cmd.sh upterm-open <path>        - Open project in upterm
-#   tmux_fzf_cmd.sh --version                 - Print version
 
 _tmux_source_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 

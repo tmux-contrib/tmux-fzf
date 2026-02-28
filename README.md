@@ -1,16 +1,29 @@
 # tmux-fzf
 
-A tmux plugin for fuzzy finding projects and sessions using [fzf](https://github.com/junegunn/fzf).
+A `tmux` plugin for fuzzy finding projects and sessions using [fzf](https://github.com/junegunn/fzf).
+
+## Dependencies
+
+### Required
+
+- [fzf](https://github.com/junegunn/fzf)
+- [fd](https://github.com/sharkdp/fd)
+
+### Optional
+
+- [gh](https://cli.github.com/) - Enables opening GitHub repositories from the picker
+- [gum](https://github.com/charmbracelet/gum) - Highlights upterm sessions in the session picker
+- [tmux-upterm](https://github.com/tmux-contrib/tmux-upterm) - Enables opening projects in upterm
 
 ## Installation
 
-```tmux
-# configure the tmux plugins manager
-set -g @plugin "tmux-plugins/tpm"
+Add this plugin to your `~/.tmux.conf`:
 
-# official plugins
+```tmux
 set -g @plugin 'tmux-contrib/tmux-fzf'
 ```
+
+And install it by running `<prefix> + I`.
 
 ## Usage
 
@@ -23,14 +36,23 @@ set -g @plugin 'tmux-contrib/tmux-fzf'
 
 - Select a project directory to create or switch to a session
 - Press <kbd>Ctrl</kbd>+<kbd>O</kbd> to open the project's GitHub repository in the browser
+- Press <kbd>Ctrl</kbd>+<kbd>T</kbd> to open the project in upterm (if available)
 
 ### Session Picker
 
 - Select a session to switch to it
+- Press <kbd>Ctrl</kbd>+<kbd>O</kbd> to open the session's GitHub repository in the browser
 - Press <kbd>Ctrl</kbd>+<kbd>X</kbd> to kill the highlighted session
 - Press <kbd>Space</kbd> for jump mode
 
-### Options
+### Session Naming
+
+Sessions are named from the project directory path using the `workspace/project` convention:
+
+- `/home/user/Projects/github.com/org/repo` → `org/repo`
+- Dots in names are replaced with underscores for tmux compatibility
+
+## Configuration
 
 Add these options to your `~/.tmux.conf`:
 
@@ -62,3 +84,57 @@ This plugin uses a **two-key sequence** approach:
 - Logical grouping of all fzf commands under the "f" namespace
 - Easy to expand with more commands in the future
 - Works reliably in all terminal emulators
+
+## Commands
+
+The `scripts/tmux_fzf_cmd.sh` script provides sub-commands used internally by the plugin. These can also be called directly:
+
+```sh
+# Print plugin version
+scripts/tmux_fzf_cmd.sh --version
+
+# List project directories (full paths)
+scripts/tmux_fzf_cmd.sh project-list
+
+# Return configured projects directory
+scripts/tmux_fzf_cmd.sh project-dir
+
+# List sessions with styling
+scripts/tmux_fzf_cmd.sh session-list
+
+# Open GitHub repository in browser (accepts path or session name)
+scripts/tmux_fzf_cmd.sh github-open <path|session>
+
+# Open project in upterm
+scripts/tmux_fzf_cmd.sh upterm-open <path>
+```
+
+### Debugging
+
+Enable trace output with the `DEBUG` environment variable:
+
+```sh
+DEBUG=1 scripts/tmux_fzf_cmd.sh --version
+```
+
+## Development
+
+### Prerequisites
+
+Install dependencies using [Nix](https://nixos.org/):
+
+```sh
+nix develop
+```
+
+Or install manually: `bash`, `tmux`, `fzf`, `fd`, `bats`
+
+### Running Tests
+
+```sh
+bats tests/
+```
+
+## License
+
+MIT
