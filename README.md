@@ -1,6 +1,6 @@
 # tmux-fzf
 
-A `tmux` plugin for fuzzy finding projects and sessions using [fzf](https://github.com/junegunn/fzf).
+Instantly switch between projects and sessions in tmux with fuzzy search powered by [fzf](https://github.com/junegunn/fzf).
 
 ## Dependencies
 
