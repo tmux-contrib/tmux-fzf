@@ -16,11 +16,19 @@ _tmux_source_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "$_tmux_source_dir/tmux_core.sh"
 
 # Return the configured projects directory
+#
+# Outputs:
+#   Projects directory path (default: ~/Projects)
 _project_dir() {
 	_tmux_get_option "@fzf-projects-path" "$HOME/Projects"
 }
 
 # List project directories using fd (full paths)
+#
+# Searches 3 levels deep under the projects directory (host/workspace/project).
+#
+# Outputs:
+#   Full directory paths to stdout, one per line
 _project_list() {
 	local dir_path
 	dir_path="$(_project_dir)"
@@ -28,6 +36,12 @@ _project_list() {
 }
 
 # Return fzf field index to start display from (for --with-nth)
+#
+# Calculates the slash-delimited field offset so fzf displays only
+# the host/workspace/project portion of each path.
+#
+# Outputs:
+#   Numeric field index
 _project_list_depth() {
 	local dir_path
 	dir_path="$(_project_dir)"
@@ -135,7 +149,7 @@ main() {
 		_upterm_open "$1"
 		;;
 	*)
-		echo "Usage: tmux_fzf_cmd.sh {--version|project-list|session-list|github-open|upterm-open} [args...]" >&2
+		echo "Usage: tmux_fzf_cmd.sh {--version|project-dir|project-list|project-list-depth|session-list|github-open|upterm-open} [args...]" >&2
 		exit 1
 		;;
 	esac
