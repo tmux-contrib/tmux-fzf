@@ -1,6 +1,6 @@
 # tmux-fzf
 
-Instantly switch between projects and sessions in tmux with fuzzy search powered by [fzf](https://github.com/junegunn/fzf).
+Blazing-fast project and session switching for tmux, powered by [fzf](https://github.com/junegunn/fzf).
 
 ## Dependencies
 
