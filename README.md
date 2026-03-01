@@ -66,26 +66,26 @@ This plugin uses a **two-key sequence** approach:
 
 ## Commands
 
-You can call the `scripts/tmux_fzf_cmd.sh` script directly:
+You can call the `scripts/tmux_fzf.sh` script directly:
 
 ```sh
 # Print plugin version
-/path/to/tmux-fzf/scripts/tmux_fzf_cmd.sh --version
+/path/to/tmux-fzf/scripts/tmux_fzf.sh --version
 
 # Return configured projects directory
-/path/to/tmux-fzf/scripts/tmux_fzf_cmd.sh project-dir
+/path/to/tmux-fzf/scripts/tmux_fzf.sh project-dir
 
 # List project directories (full paths)
-/path/to/tmux-fzf/scripts/tmux_fzf_cmd.sh project-list
+/path/to/tmux-fzf/scripts/tmux_fzf.sh project-list
 
 # List sessions with styling
-/path/to/tmux-fzf/scripts/tmux_fzf_cmd.sh session-list
+/path/to/tmux-fzf/scripts/tmux_fzf.sh session-list
 
 # Open GitHub repository in browser (accepts path or session name)
-/path/to/tmux-fzf/scripts/tmux_fzf_cmd.sh github-open <path|session>
+/path/to/tmux-fzf/scripts/tmux_fzf.sh github-open <path|session>
 
 # Open project in upterm
-/path/to/tmux-fzf/scripts/tmux_fzf_cmd.sh upterm-open <path>
+/path/to/tmux-fzf/scripts/tmux_fzf.sh upterm-open <path>
 ```
 
 ### Debugging
@@ -93,7 +93,7 @@ You can call the `scripts/tmux_fzf_cmd.sh` script directly:
 Enable trace output with the `DEBUG` environment variable:
 
 ```sh
-DEBUG=1 /path/to/tmux-fzf/scripts/tmux_fzf_cmd.sh --version
+DEBUG=1 /path/to/tmux-fzf/scripts/tmux_fzf.sh --version
 ```
 
 ## Configuration

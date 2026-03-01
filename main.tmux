@@ -3,15 +3,15 @@ set -euo pipefail
 
 [[ -z "${DEBUG:-}" ]] || set -x
 
-_tmux_root_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+_tmux_fzf_root="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-[[ -f "$_tmux_root_dir/scripts/tmux_core.sh" ]] || {
+[[ -f "$_tmux_fzf_root/scripts/tmux_core.sh" ]] || {
 	echo "tmux-fzf: missing tmux_core.sh" >&2
 	exit 1
 }
 
 # shellcheck source=scripts/tmux_core.sh
-source "$_tmux_root_dir/scripts/tmux_core.sh"
+source "$_tmux_fzf_root/scripts/tmux_core.sh"
 
 main() {
 	_check_dependencies
@@ -34,8 +34,8 @@ main() {
 	fzf_sessions_key=${fzf_sessions_key:-'s'}
 
 	# Bind keys within the fzf-menu table
-	tmux bind -T fzf-menu "$fzf_projects_key" run-shell "$_tmux_root_dir/scripts/tmux_fzf_project.sh"
-	tmux bind -T fzf-menu "$fzf_sessions_key" run-shell "$_tmux_root_dir/scripts/tmux_fzf_session.sh"
+	tmux bind -T fzf-menu "$fzf_projects_key" run-shell "$_tmux_fzf_root/scripts/tmux_fzf_project.sh"
+	tmux bind -T fzf-menu "$fzf_sessions_key" run-shell "$_tmux_fzf_root/scripts/tmux_fzf_session.sh"
 }
 
 main

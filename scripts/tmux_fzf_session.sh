@@ -3,15 +3,15 @@ set -euo pipefail
 
 [[ -z "${DEBUG:-}" ]] || set -x
 
-_tmux_source_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+_tmux_fzf_source_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-[[ -f "$_tmux_source_dir/tmux_core.sh" ]] || {
+[[ -f "$_tmux_fzf_source_dir/tmux_core.sh" ]] || {
 	echo "tmux-fzf: missing tmux_core.sh" >&2
 	exit 1
 }
 
 # shellcheck source=tmux_core.sh
-source "$_tmux_source_dir/tmux_core.sh"
+source "$_tmux_fzf_source_dir/tmux_core.sh"
 
 # Open an existing tmux session using fzf selection
 #
@@ -22,7 +22,7 @@ source "$_tmux_source_dir/tmux_core.sh"
 #   - jump:   Accept selection after jump
 tmux_session_open() {
 	local session_name
-	local session_list="$_tmux_source_dir/tmux_fzf_cmd.sh session-list"
+	local session_list="$_tmux_fzf_source_dir/tmux_fzf.sh session-list"
 
 	local client_tty
 	client_tty=$(_tmux_get_client_tty)
@@ -32,7 +32,7 @@ tmux_session_open() {
 		$session_list | fzf "${_fzf_options[@]}" \
 			--footer "  Sessions · $client_tty" \
 			--jump-labels "123456789" \
-			--bind "ctrl-o:execute-silent($_tmux_source_dir/tmux_fzf_cmd.sh github-open '{}')" \
+			--bind "ctrl-o:execute-silent($_tmux_fzf_source_dir/tmux_fzf.sh github-open '{}')" \
 			--bind "ctrl-x:execute(tmux kill-session -t {})+reload($session_list),space:jump,jump:accept"
 	) || true
 

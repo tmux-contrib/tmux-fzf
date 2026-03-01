@@ -123,7 +123,7 @@ _tmux_get_session_option() {
 	local default="${3:-}"
 	local value
 
-	value="$(tmux show-options -t "$session" -qv "$option" 2>/dev/null)"
+	value="$(tmux show-option -t "$session" -qv "$option" 2>/dev/null)"
 	echo "${value:-$default}"
 }
 

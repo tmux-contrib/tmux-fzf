@@ -5,15 +5,15 @@ set -euo pipefail
 
 # Command helper script for tmux-fzf.
 
-_tmux_source_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+_tmux_fzf_source_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-[[ -f "$_tmux_source_dir/tmux_core.sh" ]] || {
+[[ -f "$_tmux_fzf_source_dir/tmux_core.sh" ]] || {
 	echo "tmux-fzf: missing tmux_core.sh" >&2
 	exit 1
 }
 
 # shellcheck source=tmux_core.sh
-source "$_tmux_source_dir/tmux_core.sh"
+source "$_tmux_fzf_source_dir/tmux_core.sh"
 
 # Return the configured projects directory
 #
@@ -128,7 +128,7 @@ main() {
 
 	case "$command" in
 	--version)
-		cat "$_tmux_source_dir/../version.txt"
+		cat "$_tmux_fzf_source_dir/../version.txt"
 		;;
 	project-dir)
 		_project_dir
@@ -149,7 +149,7 @@ main() {
 		_upterm_open "$1"
 		;;
 	*)
-		echo "Usage: tmux_fzf_cmd.sh {--version|project-dir|project-list|project-list-depth|session-list|github-open|upterm-open} [args...]" >&2
+		echo "Usage: tmux_fzf.sh {--version|project-dir|project-list|project-list-depth|session-list|github-open|upterm-open} [args...]" >&2
 		exit 1
 		;;
 	esac

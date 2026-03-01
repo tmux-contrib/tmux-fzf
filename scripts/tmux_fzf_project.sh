@@ -3,15 +3,15 @@ set -euo pipefail
 
 [[ -z "${DEBUG:-}" ]] || set -x
 
-_tmux_source_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+_tmux_fzf_source_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-[[ -f "$_tmux_source_dir/tmux_core.sh" ]] || {
+[[ -f "$_tmux_fzf_source_dir/tmux_core.sh" ]] || {
 	echo "tmux-fzf: missing tmux_core.sh" >&2
 	exit 1
 }
 
 # shellcheck source=tmux_core.sh
-source "$_tmux_source_dir/tmux_core.sh"
+source "$_tmux_fzf_source_dir/tmux_core.sh"
 
 # This script is adapted from ThePrimeagen's tmux-sessionizer:
 # https://github.com/ThePrimeagen/tmux-sessionizer
@@ -26,7 +26,7 @@ tmux_project_open() {
 	local project_path
 
 	local project_dir
-	project_dir="$("$_tmux_source_dir/tmux_fzf_cmd.sh" project-dir)"
+	project_dir="$("$_tmux_fzf_source_dir/tmux_fzf.sh" project-dir)"
 	# Let's make the project path display cleaner by using ~ for home directory.
 	if [[ $project_dir == $HOME/* ]]; then
 		# shellcheck disable=SC2088 disable=SC2295
@@ -34,17 +34,17 @@ tmux_project_open() {
 	fi
 
 	local project_list
-	project_list="$_tmux_source_dir/tmux_fzf_cmd.sh project-list"
+	project_list="$_tmux_fzf_source_dir/tmux_fzf.sh project-list"
 
 	local project_list_depth
-	project_list_depth=$("$_tmux_source_dir/tmux_fzf_cmd.sh" project-list-depth)
+	project_list_depth=$("$_tmux_fzf_source_dir/tmux_fzf.sh" project-list-depth)
 	# List project directories and use fzf to select one.
 	project_path=$(
 		$project_list | fzf "${_fzf_options[@]}" \
 			--footer "  $project_dir" \
 			--with-nth="$project_list_depth.." \
-			--bind "ctrl-o:execute-silent($_tmux_source_dir/tmux_fzf_cmd.sh github-open '{}')" \
-			--bind "ctrl-t:execute($_tmux_source_dir/tmux_fzf_cmd.sh upterm-open '{}')+abort"
+			--bind "ctrl-o:execute-silent($_tmux_fzf_source_dir/tmux_fzf.sh github-open '{}')" \
+			--bind "ctrl-t:execute($_tmux_fzf_source_dir/tmux_fzf.sh upterm-open '{}')+abort"
 	) || true
 
 	# Exit silently if no directory was selected.
