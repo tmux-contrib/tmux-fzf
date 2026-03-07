@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.1](https://github.com/tmux-contrib/tmux-fzf/compare/v0.2.0...v0.2.1) (2026-03-07)
+
+
+### Reverts
+
+* restore explicit "true" check for [@upterm-session](https://github.com/upterm-session) ([2b8b8a4](https://github.com/tmux-contrib/tmux-fzf/commit/2b8b8a49da9c42a0dd374045e243dacf1fd0e827))
+
 ## [0.2.0](https://github.com/tmux-contrib/tmux-fzf/compare/v0.1.0...v0.2.0) (2026-02-28)
 
 
