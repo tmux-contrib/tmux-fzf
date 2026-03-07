@@ -57,7 +57,7 @@ _project_list_depth() {
 _session_list() {
 	if command -v gum >/dev/null 2>&1; then
 		while read -r name flag; do
-			if [[ -n "$flag" ]]; then
+			if [[ "$flag" = "true" ]]; then
 				CLICOLOR_FORCE=1 gum style --foreground 9 "$name"
 			else
 				echo "$name"
