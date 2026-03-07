@@ -62,7 +62,7 @@ _session_list() {
 			else
 				echo "$name"
 			fi
-		done < <(tmux list-sessions -F '#{session_name} #{@is_upterm_session}')
+		done < <(tmux list-sessions -F '#{session_name} #{@upterm-session}')
 	else
 		_tmux_list_sessions
 	fi
