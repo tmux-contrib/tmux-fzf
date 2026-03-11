@@ -16,6 +16,6 @@ jobs:
         with:
           repository: tmux-contrib/tmux-aws
           path: .tmux-aws
-      - uses: DeterminateSystems/nix-installer-action@v3
+      - uses: DeterminateSystems/nix-installer-action@v21
       - uses: DeterminateSystems/magic-nix-cache-action@v13
       - run: nix develop --command bats tests/
