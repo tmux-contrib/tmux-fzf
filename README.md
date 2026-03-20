@@ -1,8 +1,8 @@
 # tmux-fzf
 
-[![Test](https://github.com/tmux-contrib/tmux-fzf/actions/workflows/test.yml/badge.svg)](https://github.com/tmux-contrib/tmux-fzf/actions/workflows/test.yml) [![Release](https://img.shields.io/github/v/release/tmux-contrib/tmux-fzf)](https://github.com/tmux-contrib/tmux-fzf/releases) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+> Blazing-fast project and session switching for tmux, powered by [fzf](https://github.com/junegunn/fzf).
 
-Blazing-fast project and session switching for tmux, powered by [fzf](https://github.com/junegunn/fzf).
+[![Test](https://github.com/tmux-contrib/tmux-fzf/actions/workflows/test.yml/badge.svg)](https://github.com/tmux-contrib/tmux-fzf/actions/workflows/test.yml) [![Release](https://img.shields.io/github/v/release/tmux-contrib/tmux-fzf)](https://github.com/tmux-contrib/tmux-fzf/releases) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 ## Dependencies
 
