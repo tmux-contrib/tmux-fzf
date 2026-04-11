@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.2](https://github.com/tmux-contrib/tmux-fzf/compare/v0.2.1...v0.2.2) (2026-04-11)
+
+
+### Bug Fixes
+
+* add postCreateCommand to restore nix volume permissions ([e58e941](https://github.com/tmux-contrib/tmux-fzf/commit/e58e941314460c693ba981edccbad6a117978433))
+
 ## [0.2.1](https://github.com/tmux-contrib/tmux-fzf/compare/v0.2.0...v0.2.1) (2026-03-07)
 
 
