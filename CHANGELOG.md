@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.3](https://github.com/tmux-contrib/tmux-fzf/compare/v0.2.2...v0.2.3) (2026-05-04)
+
+
+### Bug Fixes
+
+* **github:** correct action versions in update.yml ([ef80068](https://github.com/tmux-contrib/tmux-fzf/commit/ef80068451930689c07670c88ef2da7e9c77b258))
+
 ## [0.2.2](https://github.com/tmux-contrib/tmux-fzf/compare/v0.2.1...v0.2.2) (2026-04-11)
 
 
