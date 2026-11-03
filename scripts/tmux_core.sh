@@ -108,19 +108,21 @@ _tmux_vagrant_name() {
 
 # Format "vagrant global-status" output for fzf display
 #
-# Reads the human-readable table on stdin and emits one aligned line per box:
-# "id name state provider directory". The directory is the remainder of the
-# line, so paths containing spaces are preserved. Prose after the table is
-# ignored, and no output is produced when there are no boxes.
+# Reads the human-readable table on stdin and emits a column header line
+# followed by one aligned line per box: "id name state provider directory".
+# The directory is the remainder of the line, so paths containing spaces are
+# preserved. Prose after the table is ignored, and no output (not even the
+# header) is produced when there are no boxes.
 #
 # Outputs:
-#   One line per vagrant box to stdout
+#   Header line, then one line per vagrant box, to stdout
 _vagrant_parse_status() {
 	awk '
 		function pad(s, w) {
 			while (length(s) < w) s = s " "
 			return s
 		}
+		BEGIN { wi = 2; wn = 4; ws = 5; wp = 8 }
 		/^-+[ \t]*$/ { body = 1; next }
 		!body { next }
 		NF == 0 { exit }
@@ -137,6 +139,8 @@ _vagrant_parse_status() {
 			if (length($3) > wp) wp = length($3)
 		}
 		END {
+			if (n > 0)
+				print pad("ID", wi) "  " pad("NAME", wn) "  " pad("STATE", ws) "  " pad("PROVIDER", wp) "  " "DIRECTORY"
 			for (i = 1; i <= n; i++)
 				print pad(id[i], wi) "  " pad(name[i], wn) "  " pad(state[i], ws) "  " pad(prov[i], wp) "  " path[i]
 		}

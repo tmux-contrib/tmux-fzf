@@ -47,7 +47,7 @@ setup() {
 
 # -- _vagrant_parse_status -------------------------------------------------
 
-@test "_vagrant_parse_status: formats rows and ignores header and trailing prose" {
+@test "_vagrant_parse_status: emits aligned column header, rows and ignores trailing prose" {
 	run _vagrant_parse_status <<'STATUS'
 id       name    provider  state   directory
 -----------------------------------------------------------------------
@@ -57,9 +57,10 @@ e4f5a6b  web     parallels poweroff /home/user/other
 The above shows information about all known Vagrant environments
 on this machine.
 STATUS
-	[[ "${#lines[@]}" -eq 2 ]]
-	[[ "${lines[0]}" = "a1b2c3d  default  running   virtualbox  /home/user/app" ]]
-	[[ "${lines[1]}" = "e4f5a6b  web      poweroff  parallels   /home/user/other" ]]
+	[[ "${#lines[@]}" -eq 3 ]]
+	[[ "${lines[0]}" = "ID       NAME     STATE     PROVIDER    DIRECTORY" ]]
+	[[ "${lines[1]}" = "a1b2c3d  default  running   virtualbox  /home/user/app" ]]
+	[[ "${lines[2]}" = "e4f5a6b  web      poweroff  parallels   /home/user/other" ]]
 }
 
 @test "_vagrant_parse_status: keeps directories containing spaces" {
@@ -69,10 +70,10 @@ id       name    provider  state   directory
 a1b2c3d  default virtualbox running /home/user/my project/box
 
 STATUS
-	[[ "$output" = "a1b2c3d  default  running  virtualbox  /home/user/my project/box" ]]
+	[[ "${lines[1]}" = "a1b2c3d  default  running  virtualbox  /home/user/my project/box" ]]
 }
 
-@test "_vagrant_parse_status: produces no output when there are no boxes" {
+@test "_vagrant_parse_status: produces no output, not even a header, when there are no boxes" {
 	run _vagrant_parse_status <<'STATUS'
 There are no active Vagrant environments on this computer! Or,
 you haven't destroyed and recreated Vagrant environments that were

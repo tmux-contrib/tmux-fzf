@@ -45,6 +45,7 @@ tmux_vagrant_open() {
 	output=$(
 		fzf "${_fzf_options[@]}" \
 			--expect "ctrl-w" \
+			--header-lines=1 \
 			--footer " Vagrant Boxes" \
 			--bind "ctrl-x:execute($tmux_fzf vagrant-halt {})+reload($vagrant_list)" \
 			--bind "ctrl-p:execute-silent($tmux_fzf vagrant-prune)+reload($vagrant_list)" \
