@@ -148,6 +148,30 @@ set -g @fzf-sessions-key 'k'
 set -g @fzf-vagrant-key 'l'
 ```
 
+### Customizing the pickers
+
+Each picker accepts extra [fzf options](https://junegunn.github.io/fzf/reference/) through its own tmux option. They are added after the plugin's own options, so they can add shortcuts and override defaults (including the plugin's own bindings on the same key).
+
+| Option                      | Picker  |
+| --------------------------- | ------- |
+| `@fzf-projects-fzf-options` | Project |
+| `@fzf-sessions-fzf-options` | Session |
+| `@fzf-vagrant-fzf-options`  | Vagrant |
+
+```tmux
+# Run your own command on the highlighted project (fzf substitutes {})
+set -g @fzf-projects-fzf-options "--bind 'ctrl-e:execute(code {})'"
+
+# Several options, with quotes for values that contain spaces
+set -g @fzf-sessions-fzf-options "--cycle --prompt 'switch > '"
+```
+
+Notes:
+
+- The value is split like shell words (single quotes, double quotes and backslashes work), but nothing is expanded or executed while it is read.
+- If the quotes are unbalanced, the option is ignored and a tmux message is shown.
+- `{}` is the highlighted line. In the project picker that is the full project path, in the session picker the session name, and in the vagrant picker the whole table row (`id name state provider directory`).
+
 ## Development
 
 ### Prerequisites

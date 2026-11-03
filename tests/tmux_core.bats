@@ -93,3 +93,38 @@ STATUS
 	run _vagrant_ssh_command "a1b2c3d" "poweroff"
 	[[ "$output" == "vagrant up a1b2c3d || "*"; vagrant ssh a1b2c3d" ]]
 }
+
+# -- _fzf_split_options ----------------------------------------------------
+
+@test "_fzf_split_options: empty string yields no options" {
+	_fzf_split_options ""
+	[[ "${#_fzf_user_options[@]}" -eq 0 ]]
+}
+
+@test "_fzf_split_options: splits on whitespace" {
+	_fzf_split_options "--no-mouse --cycle"
+	[[ "${#_fzf_user_options[@]}" -eq 2 ]]
+	[[ "${_fzf_user_options[0]}" = "--no-mouse" ]]
+	[[ "${_fzf_user_options[1]}" = "--cycle" ]]
+}
+
+@test "_fzf_split_options: keeps quoted values containing spaces together" {
+	_fzf_split_options "--bind 'ctrl-e:execute(my-cmd {})' --footer \"my footer\""
+	[[ "${#_fzf_user_options[@]}" -eq 4 ]]
+	[[ "${_fzf_user_options[1]}" = "ctrl-e:execute(my-cmd {})" ]]
+	[[ "${_fzf_user_options[3]}" = "my footer" ]]
+}
+
+@test "_fzf_split_options: never executes command substitutions" {
+	_fzf_split_options "--prompt '\$(touch $BATS_TEST_TMPDIR/pwned)'"
+	[[ "${_fzf_user_options[1]}" = "\$(touch $BATS_TEST_TMPDIR/pwned)" ]]
+	[[ ! -e "$BATS_TEST_TMPDIR/pwned" ]]
+}
+
+@test "_fzf_split_options: unbalanced quotes fail and leave no options" {
+	run _fzf_split_options "--bind 'ctrl-e:execute(x)"
+	[[ "$status" -eq 1 ]]
+	_fzf_user_options=(stale)
+	_fzf_split_options "--bind 'ctrl-e:execute(x)" || true
+	[[ "${#_fzf_user_options[@]}" -eq 0 ]]
+}

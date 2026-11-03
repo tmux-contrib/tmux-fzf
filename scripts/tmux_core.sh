@@ -26,6 +26,51 @@ _check_dependencies() {
 	fi
 }
 
+# Extra fzf options supplied by the user, filled by _fzf_load_user_options.
+_fzf_user_options=()
+
+# Split a string of fzf options into the _fzf_user_options array
+#
+# Honors single quotes, double quotes and backslash escapes like a shell
+# would, but never executes anything (no eval or expansion). On unbalanced
+# quotes the array is left empty and the function returns 1.
+#
+# Arguments:
+#   $1 - option string, e.g. "--bind 'ctrl-e:execute(my-cmd {})'"
+# Side effects:
+#   Sets the global _fzf_user_options array.
+_fzf_split_options() {
+	local arg
+
+	_fzf_user_options=()
+	[[ -n "${1:-}" ]] || return 0
+
+	printf '%s' "$1" | xargs true >/dev/null 2>&1 || return 1
+
+	while IFS= read -r -d '' arg; do
+		_fzf_user_options+=("$arg")
+	done < <(printf '%s' "$1" | xargs printf '%s\0')
+}
+
+# Load the user's extra fzf options for a picker
+#
+# Reads the "@fzf-<picker>-fzf-options" tmux option. Pickers append the result
+# after their own flags, so user bindings and flags take precedence. Invalid
+# values are ignored with a tmux message.
+#
+# Arguments:
+#   $1 - picker name (projects, sessions or vagrant)
+# Side effects:
+#   Sets the global _fzf_user_options array.
+_fzf_load_user_options() {
+	local option="@fzf-$1-fzf-options"
+
+	if ! _fzf_split_options "$(_tmux_get_option "$option")"; then
+		tmux display-message "tmux-fzf: ignoring $option (unbalanced quotes)"
+		_fzf_user_options=()
+	fi
+}
+
 # Switch to a given tmux session
 #
 # Arguments:

@@ -27,13 +27,18 @@ tmux_session_open() {
 	local client_tty
 	client_tty=$(_tmux_get_client_tty)
 
+	# User options (@fzf-sessions-fzf-options) are appended last so they can
+	# override the defaults.
+	_fzf_load_user_options sessions
+
 	# List sessions, extract their names, and use fzf to select one.
 	session_name=$(
 		$session_list | fzf "${_fzf_options[@]}" \
 			--footer "  Sessions · $client_tty" \
 			--jump-labels "123456789" \
 			--bind "ctrl-o:execute-silent($_tmux_fzf_source_dir/tmux_fzf.sh github-open '{}')" \
-			--bind "ctrl-x:execute(tmux kill-session -t {})+reload($session_list),space:jump,jump:accept"
+			--bind "ctrl-x:execute(tmux kill-session -t {})+reload($session_list),space:jump,jump:accept" \
+			${_fzf_user_options[@]+"${_fzf_user_options[@]}"}
 	) || true
 
 	# If a session is selected, switch to it.

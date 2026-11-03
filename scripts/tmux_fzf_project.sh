@@ -38,13 +38,18 @@ tmux_project_open() {
 
 	local project_list_depth
 	project_list_depth=$("$_tmux_fzf_source_dir/tmux_fzf.sh" project-list-depth)
+	# User options (@fzf-projects-fzf-options) are appended last so they can
+	# override the defaults.
+	_fzf_load_user_options projects
+
 	# List project directories and use fzf to select one.
 	project_path=$(
 		$project_list | fzf "${_fzf_options[@]}" \
 			--footer "  $project_dir" \
 			--with-nth="$project_list_depth.." \
 			--bind "ctrl-o:execute-silent($_tmux_fzf_source_dir/tmux_fzf.sh github-open '{}')" \
-			--bind "ctrl-t:execute($_tmux_fzf_source_dir/tmux_fzf.sh upterm-open '{}')+abort"
+			--bind "ctrl-t:execute($_tmux_fzf_source_dir/tmux_fzf.sh upterm-open '{}')+abort" \
+			${_fzf_user_options[@]+"${_fzf_user_options[@]}"}
 	) || true
 
 	# Exit silently if no directory was selected.
