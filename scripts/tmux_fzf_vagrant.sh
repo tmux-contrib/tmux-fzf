@@ -39,6 +39,10 @@ tmux_vagrant_open() {
 		return 0
 	fi
 
+	# User options (@fzf-vagrant-fzf-options) are appended last so they can
+	# override the defaults.
+	_fzf_load_user_options vagrant
+
 	# With --expect, fzf prints the pressed key (empty for enter) on the first
 	# line and the selected entry on the second.
 	local output
@@ -49,6 +53,7 @@ tmux_vagrant_open() {
 			--footer " Vagrant Boxes" \
 			--bind "ctrl-x:execute($tmux_fzf vagrant-halt {})+reload($vagrant_list)" \
 			--bind "ctrl-p:execute-silent($tmux_fzf vagrant-prune)+reload($vagrant_list)" \
+			${_fzf_user_options[@]+"${_fzf_user_options[@]}"} \
 			<<<"$boxes"
 	) || true
 
