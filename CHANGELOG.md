@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.3.0](https://github.com/tmux-contrib/tmux-fzf/compare/v0.2.3...v0.3.0) (2026-11-03)
+
+
+### Features
+
+* allow extra fzf options per picker via tmux options ([#46](https://github.com/tmux-contrib/tmux-fzf/issues/46)) ([70e6c10](https://github.com/tmux-contrib/tmux-fzf/commit/70e6c10dd1f56d78e812a6fa0cc68549183e4108))
+* **vagrant:** add vagrant box picker ([#43](https://github.com/tmux-contrib/tmux-fzf/issues/43)) ([65a1d6b](https://github.com/tmux-contrib/tmux-fzf/commit/65a1d6be9425ef4dbca22e9e172c0240c8b0ae32))
+
+
+### Bug Fixes
+
+* **vagrant:** add column header row to the box picker ([7156c29](https://github.com/tmux-contrib/tmux-fzf/commit/7156c2978627eb5744782a62a4ea47d47fd56f82))
+
 ## [0.2.3](https://github.com/tmux-contrib/tmux-fzf/compare/v0.2.2...v0.2.3) (2026-05-04)
 
 
