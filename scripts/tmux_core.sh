@@ -55,11 +55,22 @@ _tmux_list_sessions() {
 # Arguments:
 #   $1 - session name
 #   $2 - working directory path
+#   $@ - (optional) command and arguments to run instead of the default shell
 # Side effects:
 #   Stores the working directory as @fzf-session-cwd session option.
 _tmux_new_session() {
-	tmux new-session -ds "$1" -c "$2"
+	tmux new-session -ds "$1" -c "$2" "${@:3}"
 	_tmux_set_session_option "$1" "@fzf-session-cwd" "$2"
+}
+
+# Create a new window in the current session and switch to it
+#
+# Arguments:
+#   $1 - window name
+#   $2 - working directory path
+#   $@ - (optional) command and arguments to run instead of the default shell
+_tmux_new_window() {
+	tmux new-window -n "$1" -c "$2" "${@:3}"
 }
 
 # Derive a session name from a directory path
@@ -78,6 +89,80 @@ _tmux_session_name() {
 	workspace=$(basename "$(dirname "$1")")
 
 	echo "$workspace/$project" | tr . _
+}
+
+# Derive a vagrant box label from its directory and machine name
+#
+# Combines the Vagrantfile directory basename and the machine name, since the
+# machine name alone is usually "default". Dots and colons are replaced with
+# underscores because tmux does not allow them in session names.
+#
+# Arguments:
+#   $1 - Vagrantfile directory path
+#   $2 - machine name
+# Outputs:
+#   Label in "directory/machine" format
+_tmux_vagrant_name() {
+	echo "$(basename "$1")/$2" | tr '.:' '__'
+}
+
+# Format "vagrant global-status" output for fzf display
+#
+# Reads the human-readable table on stdin and emits one aligned line per box:
+# "id name state provider directory". The directory is the remainder of the
+# line, so paths containing spaces are preserved. Prose after the table is
+# ignored, and no output is produced when there are no boxes.
+#
+# Outputs:
+#   One line per vagrant box to stdout
+_vagrant_parse_status() {
+	awk '
+		function pad(s, w) {
+			while (length(s) < w) s = s " "
+			return s
+		}
+		/^-+[ \t]*$/ { body = 1; next }
+		!body { next }
+		NF == 0 { exit }
+		{
+			dir = $0
+			for (i = 0; i < 4; i++) sub(/^[ \t]*[^ \t]+/, "", dir)
+			sub(/^[ \t]+/, "", dir)
+			sub(/[ \t]+$/, "", dir)
+			n++
+			id[n] = $1; name[n] = $2; prov[n] = $3; state[n] = $4; path[n] = dir
+			if (length($1) > wi) wi = length($1)
+			if (length($2) > wn) wn = length($2)
+			if (length($4) > ws) ws = length($4)
+			if (length($3) > wp) wp = length($3)
+		}
+		END {
+			for (i = 1; i <= n; i++)
+				print pad(id[i], wi) "  " pad(name[i], wn) "  " pad(state[i], ws) "  " pad(prov[i], wp) "  " path[i]
+		}
+	'
+}
+
+# Build the shell command that opens a vagrant box over ssh
+#
+# Boxes that are not running are started first. If "vagrant up" fails, the
+# error is kept on screen until a key is pressed so it is not lost when the
+# tmux session or window closes.
+#
+# Arguments:
+#   $1 - vagrant machine id
+#   $2 - machine state (e.g. running, poweroff)
+# Outputs:
+#   POSIX shell command string
+_vagrant_ssh_command() {
+	local id="$1"
+	local state="$2"
+
+	if [[ "$state" = "running" ]]; then
+		echo "vagrant ssh $id"
+	else
+		printf '%s\n' "vagrant up $id || { printf '\\nvagrant up failed. Press enter to close. '; read -r _; exit 1; }; vagrant ssh $id"
+	fi
 }
 
 # Get a tmux option with default fallback
