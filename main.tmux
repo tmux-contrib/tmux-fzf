@@ -33,9 +33,14 @@ main() {
 	fzf_sessions_key=$(_tmux_get_option "@fzf-sessions-key")
 	fzf_sessions_key=${fzf_sessions_key:-'s'}
 
+	local fzf_vagrant_key
+	fzf_vagrant_key=$(_tmux_get_option "@fzf-vagrant-key")
+	fzf_vagrant_key=${fzf_vagrant_key:-'v'}
+
 	# Bind keys within the fzf-menu table
 	tmux bind -T fzf-menu "$fzf_projects_key" run-shell "$_tmux_fzf_root/scripts/tmux_fzf_project.sh"
 	tmux bind -T fzf-menu "$fzf_sessions_key" run-shell "$_tmux_fzf_root/scripts/tmux_fzf_session.sh"
+	tmux bind -T fzf-menu "$fzf_vagrant_key" run-shell "$_tmux_fzf_root/scripts/tmux_fzf_vagrant.sh"
 }
 
 main

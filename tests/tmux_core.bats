@@ -32,3 +32,63 @@ setup() {
 	run _tmux_get_option "@nonexistent"
 	[[ "$output" = "" ]]
 }
+
+# -- _tmux_vagrant_name ----------------------------------------------------
+
+@test "_tmux_vagrant_name: combines directory basename and machine name" {
+	run _tmux_vagrant_name "/home/user/Projects/system.d" "default"
+	[[ "$output" = "system_d/default" ]]
+}
+
+@test "_tmux_vagrant_name: replaces colons with underscores" {
+	run _tmux_vagrant_name "/home/user/web" "app:1"
+	[[ "$output" = "web/app_1" ]]
+}
+
+# -- _vagrant_parse_status -------------------------------------------------
+
+@test "_vagrant_parse_status: formats rows and ignores header and trailing prose" {
+	run _vagrant_parse_status <<'STATUS'
+id       name    provider  state   directory
+-----------------------------------------------------------------------
+a1b2c3d  default virtualbox running /home/user/app
+e4f5a6b  web     parallels poweroff /home/user/other
+
+The above shows information about all known Vagrant environments
+on this machine.
+STATUS
+	[[ "${#lines[@]}" -eq 2 ]]
+	[[ "${lines[0]}" = "a1b2c3d  default  running   virtualbox  /home/user/app" ]]
+	[[ "${lines[1]}" = "e4f5a6b  web      poweroff  parallels   /home/user/other" ]]
+}
+
+@test "_vagrant_parse_status: keeps directories containing spaces" {
+	run _vagrant_parse_status <<'STATUS'
+id       name    provider  state   directory
+-----------------------------------------------------------------------
+a1b2c3d  default virtualbox running /home/user/my project/box
+
+STATUS
+	[[ "$output" = "a1b2c3d  default  running  virtualbox  /home/user/my project/box" ]]
+}
+
+@test "_vagrant_parse_status: produces no output when there are no boxes" {
+	run _vagrant_parse_status <<'STATUS'
+There are no active Vagrant environments on this computer! Or,
+you haven't destroyed and recreated Vagrant environments that were
+started with an older version of Vagrant.
+STATUS
+	[[ -z "$output" ]]
+}
+
+# -- _vagrant_ssh_command --------------------------------------------------
+
+@test "_vagrant_ssh_command: running box connects directly" {
+	run _vagrant_ssh_command "a1b2c3d" "running"
+	[[ "$output" = "vagrant ssh a1b2c3d" ]]
+}
+
+@test "_vagrant_ssh_command: stopped box is started first" {
+	run _vagrant_ssh_command "a1b2c3d" "poweroff"
+	[[ "$output" == "vagrant up a1b2c3d || "*"; vagrant ssh a1b2c3d" ]]
+}

@@ -109,6 +109,40 @@ _upterm_open() {
 	fi
 }
 
+# List known vagrant boxes for fzf display
+#
+# Uses "vagrant global-status", which is cached and may include stale entries
+# (see _vagrant_prune).
+#
+# Outputs:
+#   One "id name state provider directory" line per box to stdout
+_vagrant_list() {
+	vagrant global-status | _vagrant_parse_status
+}
+
+# Extract the vagrant machine id from a line produced by _vagrant_list
+#
+# Arguments:
+#   $1 - list line
+# Outputs:
+#   Machine id
+_vagrant_id() {
+	echo "${1%% *}"
+}
+
+# Halt a vagrant box
+#
+# Arguments:
+#   $1 - list line produced by _vagrant_list
+_vagrant_halt() {
+	vagrant halt "$(_vagrant_id "$1")"
+}
+
+# Remove invalid entries from vagrant's global box index
+_vagrant_prune() {
+	vagrant global-status --prune >/dev/null
+}
+
 # Main command router
 #
 # Arguments:
@@ -122,6 +156,9 @@ _upterm_open() {
 #   session-list       - List sessions with styling
 #   github-open        - Open repository in browser (path or session name)
 #   upterm-open        - Open project in upterm
+#   vagrant-list       - List vagrant boxes
+#   vagrant-halt       - Halt a vagrant box (list line)
+#   vagrant-prune      - Prune stale vagrant box entries
 main() {
 	local command="${1:-}"
 	shift || true
@@ -148,8 +185,17 @@ main() {
 	upterm-open)
 		_upterm_open "$1"
 		;;
+	vagrant-list)
+		_vagrant_list
+		;;
+	vagrant-halt)
+		_vagrant_halt "$1"
+		;;
+	vagrant-prune)
+		_vagrant_prune
+		;;
 	*)
-		echo "Usage: tmux_fzf.sh {--version|project-dir|project-list|project-list-depth|session-list|github-open|upterm-open} [args...]" >&2
+		echo "Usage: tmux_fzf.sh {--version|project-dir|project-list|project-list-depth|session-list|github-open|upterm-open|vagrant-list|vagrant-halt|vagrant-prune} [args...]" >&2
 		exit 1
 		;;
 	esac
