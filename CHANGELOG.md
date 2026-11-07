@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.1](https://github.com/tmux-contrib/tmux-fzf/compare/v0.3.0...v0.3.1) (2026-11-07)
+
+
+### Bug Fixes
+
+* **ci:** merge with the App token so main gets its CI run ([#49](https://github.com/tmux-contrib/tmux-fzf/issues/49)) ([5550a76](https://github.com/tmux-contrib/tmux-fzf/commit/5550a7631aa845f77c78ad30f9349cb6761edbeb))
+
 ## [0.3.0](https://github.com/tmux-contrib/tmux-fzf/compare/v0.2.3...v0.3.0) (2026-11-03)
 
 
